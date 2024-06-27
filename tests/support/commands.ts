@@ -30,7 +30,7 @@ export async function logInUserViaApi(request: APIRequestContext) {
         user_password: user.user_password,
         user_token: responseBodyLU.data.token
     }), "utf8");
-  }
+}
 
 export async function deleteUserViaApi(request: APIRequestContext) {
     const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
@@ -41,6 +41,7 @@ export async function deleteUserViaApi(request: APIRequestContext) {
     const responseBodyDU = await responseDU.json()
     expect(responseBodyDU.message).toEqual('Account successfully deleted')
     expect(responseDU.status()).toEqual(200)
+    console.log(responseBodyDU.message)
 }
 
 export async function createUserViaApi(request: APIRequestContext) {

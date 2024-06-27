@@ -43,6 +43,7 @@ Check then both to add both options in context menu.
 - [Faker](https://fakerjs.dev/guide/)
 - [Playwright docs](https://playwright.dev/docs/intro)
 - [Read/Write JSON Files with Node.js](https://heynode.com/tutorial/readwrite-json-files-nodejs/?utm_source=youtube&utm_medium=referral+&utm_campaign=YT+description&utm_content=read-write-json-iles-with-nodejs)
+- [Assertions](https://playwright.dev/docs/test-assertions)
 
 # Tips:
 
