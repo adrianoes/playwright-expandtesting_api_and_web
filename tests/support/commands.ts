@@ -72,5 +72,59 @@ export async function createUserViaApi(request: APIRequestContext) {
     }), "utf8"); 
 }
 
+export async function deleteNoteViaApi(request: APIRequestContext) {
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+    const note_id = body.note_id;
+    const user_token = body.user_token
+    const responseDN = await request.delete(`api/notes/${note_id}`,{
+        headers: { 'X-Auth-Token': user_token }
+    })
+    const responseBodyDN = await responseDN.json()
+    expect(responseBodyDN.message).toEqual('Note successfully deleted')
+    expect(responseDN.status()).toEqual(200)
+    console.log(responseBodyDN.message)
+}
+
+export async function createNoteViaApi(request: APIRequestContext) {
+    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+    const user = {
+        user_id: body.user_id,
+        user_token: body.user_token
+    }
+    const note = {            
+        note_title: faker.word.words(3),
+        note_description: faker.word.words(5),
+        note_category: faker.helpers.arrayElement(['Home', 'Work', 'Personal'])
+    }
+    const responseCN = await request.post(`api/notes`, {
+        headers: { 'X-Auth-Token': user.user_token },
+        data: {
+            category: note.note_category,
+            description: note.note_description,
+            title: note.note_title 
+        }
+    })
+    const responseBodyCN = await responseCN.json()
+    expect(responseBodyCN.data.category).toEqual(note.note_category)
+    expect(responseBodyCN.data.description).toEqual(note.note_description)
+    expect(responseBodyCN.data.title).toEqual(note.note_title)
+    expect(responseBodyCN.data.user_id).toEqual(user.user_id)  
+    expect(responseBodyCN.message).toEqual('Note successfully created')
+    expect(responseBodyCN.status).toEqual(200)                
+    console.log(responseBodyCN.message)
+    fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
+        note_category: responseBodyCN.data.category,
+        note_description: responseBodyCN.data.description,
+        note_id: responseBodyCN.data.id,
+        note_title: responseBodyCN.data.title,
+        user_id: user.user_id,
+        user_token: user.user_token           
+    }), "utf8"); 
+}
+
+
+
+
+
 
 
