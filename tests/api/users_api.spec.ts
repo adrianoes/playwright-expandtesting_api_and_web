@@ -11,6 +11,8 @@ test.afterEach(async () => {
 test.describe('/users_api', () => {   
 
     test('Creates a new user account via API', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+
         const user = {            
             //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
             user_email: faker.internet.exampleEmail().toLowerCase(),
@@ -29,20 +31,22 @@ test.describe('/users_api', () => {
         expect(responseBodyCU.data.name).toEqual(user.user_name) 
         expect(responseBodyCU.message).toEqual('User account created successfully')
         expect(responseCU.status()).toEqual(201)    
-        console.log(responseBodyCU.message)            
-        fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
+        console.log(responseBodyCU.message)  
+        fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
             user_email: user.user_email,
             user_id:responseBodyCU.data.id,
             user_name: user.user_name,                
-            user_password: user.user_password            
+            user_password: user.user_password        
         }), "utf8"); 
-        await logInUserViaApi(request) 
-        await deleteUserViaApi(request)
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await deleteUserViaApi(request, bypassParalelismNumber)
     })
 
     test('Log in as an existing user via API', async ({ request }) => {
-        await createUserViaApi(request) 
-        const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+
+        await createUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
             user_id: body.user_id,
@@ -62,14 +66,14 @@ test.describe('/users_api', () => {
         expect(responseBodyLU.message).toEqual('Login successful')
         expect(responseLU.status()).toEqual(200)    
         console.log(responseBodyLU.message)   
-        fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
+        fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
             user_email: user.user_email,
             user_id: user.user_id,
             user_name: user.user_name,
             user_password: user.user_password,
             user_token: responseBodyLU.data.token
         }), "utf8"); 
-        await deleteUserViaApi(request)
+        await deleteUserViaApi(request, bypassParalelismNumber)
     })
 
     test('Retrieve user profile information via API', async ({ request }) =>{

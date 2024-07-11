@@ -1,6 +1,6 @@
 # playwright-expandtesting_UI_and_API
 
-UI and API testing in [expandtesting](https://practice.expandtesting.com/notes/app/) note app. This project contains basic examples on how to use playwright to test UI, API and how to combine UI and API tests. Good practices such as hooks, custom commands and tags, among others, are used. All the necessary support documentation to develop this project is placed here. When it comes to the API part, it deals with the x-www-form-urlencoded content type. Although custom commands are used, the assertion code to each test is kept in it so we can work independently in each test. 
+UI and API testing in [expandtesting](https://practice.expandtesting.com/notes/app/) note app. This project contains basic examples on how to use playwright to test UI, API and how to combine UI and API tests. Good practices such as hooks, custom commands and tags, among others, are used. All the necessary support documentation to develop this project is placed here. When it comes to the API part, it deals with the x-www-form-urlencoded content type. Although custom commands are used, the assertion code to each test is kept in it so we can work independently in each test. It deals with paralel test exection by creating one .json file for each test so we can share same test data between different requests in the test.   
 
 # Pre-requirements:
 
@@ -11,7 +11,7 @@ UI and API testing in [expandtesting](https://practice.expandtesting.com/notes/a
 | Yarn                          | 1.22.19 | Optional.                                                       |
 | Playwright                    | 1.44.1  |                                                                 |
 | Visual Studio Code            | 1.89.1  | -                                                               |
-| Playwright Test for VSCode    | v1.1.7  | Optional. Recommended so you can run tests in VSC               |                  
+| Playwright Test for VSCode    | v1.1.7  | Optional. Recommended so you can run tests in VSC.              |                  
 
 # Instalation:
 

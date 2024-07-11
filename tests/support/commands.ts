@@ -2,8 +2,8 @@ import { APIRequestContext, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import fs from 'fs'
 
-export async function logInUserViaApi(request: APIRequestContext) {
-    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+export async function logInUserViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
     const user = {
         user_email: body.user_email,
         user_id: body.user_id,
@@ -23,7 +23,7 @@ export async function logInUserViaApi(request: APIRequestContext) {
     expect(responseBodyLU.message).toEqual('Login successful')
     expect(responseLU.status()).toEqual(200)    
     console.log(responseBodyLU.message)   
-    fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
         user_email: user.user_email,
         user_id: user.user_id,
         user_name: user.user_name,
@@ -32,8 +32,8 @@ export async function logInUserViaApi(request: APIRequestContext) {
     }), "utf8");
 }
 
-export async function deleteUserViaApi(request: APIRequestContext) {
-    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+export async function deleteUserViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
     const user_token = body.user_token
     const responseDU = await request.delete(`api/users/delete-account`,{
         headers: { 'X-Auth-Token': user_token }
@@ -44,7 +44,7 @@ export async function deleteUserViaApi(request: APIRequestContext) {
     console.log(responseBodyDU.message)
 }
 
-export async function createUserViaApi(request: APIRequestContext) {
+export async function createUserViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
     const user = {            
         //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
         user_email: faker.internet.exampleEmail().toLowerCase(),
@@ -64,7 +64,7 @@ export async function createUserViaApi(request: APIRequestContext) {
     expect(responseBodyCU.message).toEqual('User account created successfully')
     expect(responseCU.status()).toEqual(201)    
     console.log(responseBodyCU.message)            
-    fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
         user_email: user.user_email,
         user_id:responseBodyCU.data.id,
         user_name: user.user_name,                
