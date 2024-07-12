@@ -1,18 +1,18 @@
 import {test, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
-import { createUserViaApi, logInUserViaApi, deleteUserViaApi } from '../support/commands'
+import { createUserViaApi, logInUserViaApi, deleteUserViaApi, deleteJsonFile } from '../support/commands'
 import fs from 'fs'
 
 
 test.afterEach(async () => {
-    fs.writeFileSync('tests/fixtures/testdata.json', (''), "utf8");
+    // fs.writeFileSync('tests/fixtures/testdata.json', (''), "utf8");
+    // await deleteJsonFile(bypassParalelismNumber)
 });
 
 test.describe('/users_api', () => {   
 
     test('Creates a new user account via API', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-
+        const bypassParalelismNumber = faker.finance.creditCardNumber()        
         const user = {            
             //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
             user_email: faker.internet.exampleEmail().toLowerCase(),
@@ -40,11 +40,11 @@ test.describe('/users_api', () => {
         }), "utf8"); 
         await logInUserViaApi(request, bypassParalelismNumber) 
         await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
     })
 
     test('Log in as an existing user via API', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
-
         await createUserViaApi(request, bypassParalelismNumber) 
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
         const user = {
@@ -74,12 +74,14 @@ test.describe('/users_api', () => {
             user_token: responseBodyLU.data.token
         }), "utf8"); 
         await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
     })
 
     test('Retrieve user profile information via API', async ({ request }) =>{
-        await createUserViaApi(request)
-        await logInUserViaApi(request)
-        const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
             user_id: body.user_id,
@@ -97,13 +99,15 @@ test.describe('/users_api', () => {
         expect(responseBodyRU.message).toEqual('Profile successful')
         expect(responseRU.status()).toEqual(200)    
         console.log(responseBodyRU.message)         
-        await deleteUserViaApi(request)
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
     }) 
 
     test('Update the user profile information via API', async ({ request }) =>{
-        await createUserViaApi(request)
-        await logInUserViaApi(request)
-        const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
             user_id: body.user_id,
@@ -133,13 +137,15 @@ test.describe('/users_api', () => {
         expect(responseBodyUU.message).toEqual('Profile updated successful')
         expect(responseUU.status()).toEqual(200)                    
         console.log(responseBodyUU.message)         
-        await deleteUserViaApi(request)
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
     })  
 
     test('Change a user\'s password via API', async ({ request }) =>{
-        await createUserViaApi(request)
-        await logInUserViaApi(request)
-        const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
         const user = {
             user_password: body.user_password,
             user_token: body.user_token
@@ -157,13 +163,15 @@ test.describe('/users_api', () => {
         expect(responseBodyCP.message).toEqual('The password was successfully updated')
         expect(responseCP.status()).toEqual(200)                    
         console.log(responseBodyCP.message)  
-        await deleteUserViaApi(request)
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
     })  
 
     test('Log out a user via API', async ({ request }) => {
-        await createUserViaApi(request) 
-        await logInUserViaApi(request)
-        const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
         const user_token = body.user_token
         const responseLOU = await request.delete(`api/users/logout`,{
             headers: { 'X-Auth-Token': user_token }
@@ -173,14 +181,16 @@ test.describe('/users_api', () => {
         expect(responseLOU.status()).toEqual(200)
         console.log(responseBodyLOU.message)
         //When login out, token becomes invalid, so there is the need to log in again to delete the user.
-        await logInUserViaApi(request)
-        await deleteUserViaApi(request)
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
     })
 
     test('Delete user account via API', async ({ request }) => {
-        await createUserViaApi(request) 
-        await logInUserViaApi(request)
-        const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
         const user_token = body.user_token
         const responseDU = await request.delete(`api/users/delete-account`,{
             headers: { 'X-Auth-Token': user_token }
@@ -189,8 +199,8 @@ test.describe('/users_api', () => {
         expect(responseBodyDU.message).toEqual('Account successfully deleted')
         expect(responseDU.status()).toEqual(200)
         console.log(responseBodyDU.message)
-    })    
-    
+        await deleteJsonFile(bypassParalelismNumber)
+    })        
 })
 
 

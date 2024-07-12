@@ -122,7 +122,9 @@ export async function createNoteViaApi(request: APIRequestContext) {
     }), "utf8"); 
 }
 
-
+export async function deleteJsonFile(bypassParalelismNumber: string) {
+    try {fs.unlinkSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`)} catch(err) {throw err}
+}
 
 
 
