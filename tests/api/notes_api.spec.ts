@@ -3,6 +3,12 @@ import { faker } from '@faker-js/faker'
 import { createUserViaApi, logInUserViaApi, deleteUserViaApi, deleteNoteViaApi, createNoteViaApi, deleteJsonFile } from '../support/commands'
 import fs from 'fs'
 
+test.beforeAll(async () => {
+    try {fs.unlinkSync(`tests/fixtures/testdata.json`)} catch(err) {throw err}
+    //github actions was not finding /fixtures directory (Error: ENOENT: no such file or directory, open 'tests/fixtures/testdata-3042-959203-7852.json'). I believe because it was not part of original playwright structure or because it is empity after test execution. A solution found in stackoverflow was to keep a empity file there to help npm to recognize this directory.
+    fs.writeFileSync(`tests/fixtures/testdata.json`,' ', "utf8"); 
+});
+
 test.describe('/notes_api', () => {  
 
     test('Creates a new note via API', async ({ request }) => {

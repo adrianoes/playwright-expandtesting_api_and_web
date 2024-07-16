@@ -44,8 +44,9 @@ Check then both to add both options in context menu.
 - [Playwright docs](https://playwright.dev/docs/intro)
 - [Read/Write JSON Files with Node.js](https://heynode.com/tutorial/readwrite-json-files-nodejs/?utm_source=youtube&utm_medium=referral+&utm_campaign=YT+description&utm_content=read-write-json-iles-with-nodejs)
 - [Assertions](https://playwright.dev/docs/test-assertions)
-- [Use array of keywords and loop through script in Playwright](https://stackoverflow.com/questions/65876180/use-array-of-keywords-and-loop-through-script-in-playwright)
+- [Use array of keywords and loop through script in Playwright](https://stackoverflow.com/a/69402975/10519428)
 - [How to Delete a File From a Directory with Node.js](https://coderrocketfuel.com/article/how-to-delete-a-file-from-a-directory-with-node-js)
+- [How to resolve Node.js: "Error: ENOENT: no such file or directory"](https://stackoverflow.com/a/62363729/10519428)
 
 # Tips:
 
