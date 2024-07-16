@@ -72,8 +72,8 @@ export async function createUserViaApi(request: APIRequestContext, bypassParalel
     }), "utf8"); 
 }
 
-export async function deleteNoteViaApi(request: APIRequestContext) {
-    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+export async function deleteNoteViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
     const note_id = body.note_id;
     const user_token = body.user_token
     const responseDN = await request.delete(`api/notes/${note_id}`,{
@@ -85,8 +85,8 @@ export async function deleteNoteViaApi(request: APIRequestContext) {
     console.log(responseBodyDN.message)
 }
 
-export async function createNoteViaApi(request: APIRequestContext) {
-    const body = JSON.parse(fs.readFileSync('tests/fixtures/testdata.json', "utf8"))
+export async function createNoteViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
     const user = {
         user_id: body.user_id,
         user_token: body.user_token
@@ -112,7 +112,7 @@ export async function createNoteViaApi(request: APIRequestContext) {
     expect(responseBodyCN.message).toEqual('Note successfully created')
     expect(responseBodyCN.status).toEqual(200)                
     console.log(responseBodyCN.message)
-    fs.writeFileSync('tests/fixtures/testdata.json',JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
         note_category: responseBodyCN.data.category,
         note_description: responseBodyCN.data.description,
         note_id: responseBodyCN.data.id,

@@ -3,12 +3,6 @@ import { faker } from '@faker-js/faker'
 import { createUserViaApi, logInUserViaApi, deleteUserViaApi, deleteJsonFile } from '../support/commands'
 import fs from 'fs'
 
-
-test.afterEach(async () => {
-    // fs.writeFileSync('tests/fixtures/testdata.json', (''), "utf8");
-    // await deleteJsonFile(bypassParalelismNumber)
-});
-
 test.describe('/users_api', () => {   
 
     test('Creates a new user account via API', async ({ request }) => {
