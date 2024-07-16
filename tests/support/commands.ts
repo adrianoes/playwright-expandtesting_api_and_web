@@ -63,7 +63,8 @@ export async function createUserViaApi(request: APIRequestContext, bypassParalel
     expect(responseBodyCU.data.name).toEqual(user.user_name) 
     expect(responseBodyCU.message).toEqual('User account created successfully')
     expect(responseCU.status()).toEqual(201)    
-    console.log(responseBodyCU.message)            
+    console.log(responseBodyCU.message)   
+    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, ' ')         
     fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
         user_email: user.user_email,
         user_id:responseBodyCU.data.id,
