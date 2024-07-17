@@ -12,6 +12,7 @@ test.beforeAll(async () => {
 test.describe('/notes_api', () => {  
 
     test('Creates a new note via API', async ({ request }) => {
+        //These first 4 lines code block are always repeating in the /notes suites. I ty to put them in a beforeEach block but they didn't work, because the second argument to bypass paralelism. When I find the time, I'll try to look for a better solution. 
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
