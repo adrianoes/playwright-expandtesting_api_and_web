@@ -122,33 +122,60 @@ export async function createNoteViaApi(request: APIRequestContext, bypassParalel
     }), "utf8"); 
 }
 
-export async function getFullFilledResponse(page: Page) {
+export async function getFullFilledResponseCU(page: Page) {
     return page.waitForResponse('/notes/api/users/register')
 }
 
-// export async function logInUserViaUi(bypassParalelismNumber: string) {
-//     const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
-//     const user = {
-//         user_email: body.user_email,
-//         user_id: body.user_id,
-//         user_name: body.user_name,
-//         user_password: body.user_password
-//     }
- 
-//     fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
-//         user_email: user.user_email,
-//         user_id: user.user_id,
-//         user_name: user.user_name,
-//         user_password: user.user_password,
-//         user_token: responseBodyLU.data.token
-//     }), "utf8");
-// }
+export async function getFullFilledResponseLogIn(page: Page) {
+    return page.waitForResponse('/notes/api/users/login')
+}
+
+export async function logInUserViaUi(page: Page, bypassParalelismNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    const user = {
+        user_email: body.user_email,
+        user_id: body.user_id,
+        user_name: body.user_name,
+        user_password: body.user_password
+    }
+    await page.goto('app/login')
+    await page.getByTestId('login-email').fill(user.user_email)
+    await page.getByTestId('login-password').fill(user.user_password)
+    const responsePromise = getFullFilledResponseLogIn(page)
+    await page.click('button:has-text("Login")') 
+    const response = await responsePromise
+    const responseBody = await response.json()
+    await page.goto('app/profile')
+    const userEmail = page.locator('[data-testid="user-email"]')
+    await expect(userEmail).toHaveValue(user.user_email)        
+    await expect(userEmail).toBeVisible()
+    const userId = page.locator('[data-testid="user-id"]')
+    await expect(userId).toHaveValue(user.user_id)        
+    await expect(userId).toBeVisible()
+    const userName = page.locator('[data-testid="user-name"]')
+    await expect(userName).toHaveValue(user.user_name)        
+    await expect(userName).toBeVisible()    
+    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+        user_email: user.user_email,
+        user_id: user.user_id,
+        user_name: user.user_name,
+        user_password: user.user_password,
+        user_token: responseBody.data.token
+    }), "utf8");
+}
 
 export async function deleteJsonFile(bypassParalelismNumber: string) {
     try {fs.unlinkSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`)} catch(err) {throw err}
 }
 
-
+export async function deleteUserViaUi(page: Page) {
+    await page.goto('app/profile')
+    await page.click('button:has-text("Delete Account")')     
+    await page.getByTestId('note-delete-confirm').click() 
+    const alertMessage = page.getByTestId('alert-message')
+    await expect(alertMessage).toContainText('Your account has been deleted. You should create a new account to continue.')        
+    await expect(alertMessage).toBeVisible()
+}
 
 
 
