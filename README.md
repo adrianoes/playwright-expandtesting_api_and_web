@@ -13,7 +13,7 @@ UI and API testing in [expandtesting](https://practice.expandtesting.com/notes/a
 | Visual Studio Code            | 1.89.1  | -                                                               |
 | Playwright Test for VSCode    | v1.1.7  | Optional. Recommended so you can run tests in VSC.              |                  
 
-# Instalation:
+# Installation:
 
 - See [Node.js page](https://nodejs.org/en) and install the aforementioned Node.js version. Keep all the preferenced options as they are.
 - To use yarn packet manager, open windows prompt as admin and execute ```corepack enable``` (Optional).
