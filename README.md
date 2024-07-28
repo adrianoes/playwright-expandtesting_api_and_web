@@ -47,6 +47,8 @@ Check then both to add both options in context menu.
 - [Use array of keywords and loop through script in Playwright](https://stackoverflow.com/a/69402975/10519428)
 - [How to Delete a File From a Directory with Node.js](https://coderrocketfuel.com/article/how-to-delete-a-file-from-a-directory-with-node-js)
 - [How to resolve Node.js: "Error: ENOENT: no such file or directory"](https://stackoverflow.com/a/62363729/10519428)
+- [trying to click a button on playwright](https://stackoverflow.com/a/71712111/10519428)
+- [How to wait for a specific API response in your Playwright end-to-end tests](https://www.youtube.com/watch?v=5CER0dKweyw)
 
 # Tips:
 

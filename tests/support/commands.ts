@@ -1,4 +1,4 @@
-import { APIRequestContext, expect } from '@playwright/test'
+import { APIRequestContext, expect, Page } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import fs from 'fs'
 
@@ -121,6 +121,28 @@ export async function createNoteViaApi(request: APIRequestContext, bypassParalel
         user_token: user.user_token           
     }), "utf8"); 
 }
+
+export async function getFullFilledResponse(page: Page) {
+    return page.waitForResponse('/notes/api/users/register')
+}
+
+// export async function logInUserViaUi(bypassParalelismNumber: string) {
+//     const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+//     const user = {
+//         user_email: body.user_email,
+//         user_id: body.user_id,
+//         user_name: body.user_name,
+//         user_password: body.user_password
+//     }
+ 
+//     fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+//         user_email: user.user_email,
+//         user_id: user.user_id,
+//         user_name: user.user_name,
+//         user_password: user.user_password,
+//         user_token: responseBodyLU.data.token
+//     }), "utf8");
+// }
 
 export async function deleteJsonFile(bypassParalelismNumber: string) {
     try {fs.unlinkSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`)} catch(err) {throw err}
