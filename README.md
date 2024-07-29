@@ -1,6 +1,6 @@
 # playwright-expandtesting_UI_and_API
 
-UI and API testing in [expandtesting](https://practice.expandtesting.com/notes/app/) note app. This project contains basic examples on how to use playwright to test UI, API and how to combine UI and API tests. Good practices such as hooks, custom commands and tags, among others, are used. All the necessary support documentation to develop this project is placed here. When it comes to the API part, it deals with the x-www-form-urlencoded content type. Although custom commands are used, the assertion code to each test is kept in it so we can work independently in each test. It deals with parallel test execution by creating one .json file for each test so we can share data between different requests in the test.  
+UI and API testing in [expandtesting](https://practice.expandtesting.com/notes/app/) note app. This project contains basic examples on how to use playwright to test UI, API and how to combine UI and API tests. Good practices such as hooks, custom commands and tags, among others, are used. All the necessary support documentation to develop this project is placed here. When it comes to the API part, it deals with the x-www-form-urlencoded content type. Although custom commands are used, the assertion code to each test is kept in it so we can work independently in each test. It deals with parallel test execution by creating one .json file for each test so we can share data between different requests in the test. The .json is excluded after each test execution. 
 
 # Pre-requirements:
 
@@ -49,6 +49,7 @@ Check then both to add both options in context menu.
 - [How to resolve Node.js: "Error: ENOENT: no such file or directory"](https://stackoverflow.com/a/62363729/10519428)
 - [trying to click a button on playwright](https://stackoverflow.com/a/71712111/10519428)
 - [How to wait for a specific API response in your Playwright end-to-end tests](https://www.youtube.com/watch?v=5CER0dKweyw)
+- [How to remove specific character surrounding a string?](https://stackoverflow.com/a/44537491/10519428)
 
 # Tips:
 
