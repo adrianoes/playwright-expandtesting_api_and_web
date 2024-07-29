@@ -50,6 +50,8 @@ Check then both to add both options in context menu.
 - [trying to click a button on playwright](https://stackoverflow.com/a/71712111/10519428)
 - [How to wait for a specific API response in your Playwright end-to-end tests](https://www.youtube.com/watch?v=5CER0dKweyw)
 - [How to remove specific character surrounding a string?](https://stackoverflow.com/a/44537491/10519428)
+- [reload](https://playwright.dev/docs/api/class-page#page-reload)
+- [How to Check an Element's Value in Playwright](https://betterstack.com/community/questions/playwright-check-element-value/)
 
 # Tips:
 

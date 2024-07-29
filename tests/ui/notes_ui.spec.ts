@@ -79,6 +79,101 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
+    test('Get all notes via UI', async ({ page }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()
+        await createUserViaUi(page, bypassParalelismNumber)
+        await logInUserViaUi(page, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {   
+            user_email: body.user_email,
+            user_id: body.user_id,  
+            user_name: body.user_name,
+            user_password: body.user_password
+        }
+        const arrayTitle = [faker.word.words(3), faker.word.words(3), faker.word.words(3), faker.word.words(3)]
+        const arrayDescription = [faker.word.words(5), faker.word.words(5), faker.word.words(5), faker.word.words(5)] 
+        const arrayCategory = [faker.helpers.arrayElement(['Home', 'Work', 'Personal']), 'Home', 'Work', 'Personal'] 
+        for (let k = 0; k < 4; k++) {
+            await page.goto('app')
+            await page.click('button:has-text("+ Add Note")') 
+            await page.locator('input[name="title"]').fill(arrayTitle[k])
+            await page.locator('textarea[name="description"]').fill(arrayDescription[k])
+            await page.locator('[name="category"]').selectOption(arrayCategory[k])
+            await page.click('button:has-text("Create")') 
+        } 
+        await page.locator(':nth-child(5) > [data-testid="note-card"] > .card-footer > [data-testid="toggle-note-switch"]').check()
+        const arrayIndex = [2, 3, 4, 5]
+        const arrayColor = ['rgb(50, 140, 160)', 'rgb(92, 107, 192)', 'rgb(255, 145, 0)', 'rgba(40, 46, 41, 0.6)'] 
+        for (let k = 0; k < 4; k++) {
+            const titleIndex = page.locator(':nth-child('+arrayIndex[k]+') > [data-testid="note-card"] > [data-testid="note-card-title"]')
+            await expect(titleIndex).toContainText(arrayTitle[3-k])        
+            await expect(titleIndex).toBeVisible()
+            const note_updated = await page.locator(':nth-child('+arrayIndex[k]+') > [data-testid="note-card"] > .card-body > [data-testid="note-card-updated-at"]').innerText();
+            const descriptionIndex = page.locator(':nth-child('+arrayIndex[k]+') > [data-testid="note-card"] > .card-body')
+            await expect(descriptionIndex).toContainText(arrayDescription[3-k]+note_updated)        
+            await expect(descriptionIndex).toBeVisible()
+            const colorIndex = page.locator(':nth-child('+arrayIndex[k]+') > [data-testid="note-card"] > [data-testid="note-card-title"]')
+            await expect(colorIndex).toHaveCSS('background-color', arrayColor[k])
+        } 
+        await page.locator(':nth-child('+arrayIndex[3]+') > [data-testid="note-card"] > .card-footer > [data-testid="toggle-note-switch"]').check()
+        fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+            user_email: user.user_email,
+            user_id: user.user_id,
+            user_name: user.user_name,
+            user_password: user.user_password,
+            note_category_1: arrayCategory[0],
+            note_description_1: arrayDescription[0],
+            note_title_1: arrayTitle[0],
+            note_category_2: arrayCategory[1],
+            note_description_2: arrayDescription[1],
+            note_title_2: arrayTitle[1],
+            note_category_3: arrayCategory[2],
+            note_description_3: arrayDescription[2],
+            note_title_3: arrayTitle[2],
+            note_category_4: arrayCategory[3],
+            note_description_4: arrayDescription[3], 
+            note_title_4: arrayTitle[3],    
+        }), "utf8"); 
+        await page.goto('app')
+        await page.click('button:has-text("All")') 
+        const completedNotes = page.locator('[data-testid="progress-info"]')
+        await expect(completedNotes).toContainText('You have 1/4 notes completed in the all categories')        
+        //reverse order so we will have all frames in the screen until end of test. 
+        for (let k = 0; k < 4; k++) {
+            const arrayIndex = [5, 4, 3, 2]
+            await page.locator(':nth-child('+arrayIndex[k]+') > [data-testid="note-card"] > .card-footer > div > [data-testid="note-delete"]').click()        
+            await page.locator('[data-testid="note-delete-confirm"]').click()
+        }
+        await deleteUserViaUi(page)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
+    test('Update an existing note via UI', async ({ page }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()
+        await createUserViaUi(page, bypassParalelismNumber)
+        await logInUserViaUi(page, bypassParalelismNumber)
+        await createNoteViaUi(page, bypassParalelismNumber)
+        await page.click('button:has-text("Edit")') 
+        const note = {            
+            title: faker.word.words(3),
+            description: faker.word.words(5),
+            category: faker.helpers.arrayElement(['Home', 'Work', 'Personal'])
+        }
+        await page.locator('[name="category"]').selectOption(note.category)
+        await page.locator('[data-testid="note-completed"]').check()
+        await page.locator('input[name="title"]').fill(note.title)
+        await page.locator('textarea[name="description"]').fill(note.description)
+        await page.click('button:has-text("Save")') 
+        const noteTitle = page.locator('[data-testid="note-card-title"]')
+        await expect(noteTitle).toContainText(note.title)        
+        await expect(noteTitle).toBeVisible()
+        const noteDescription = page.locator('[data-testid="note-card-description"]')
+        await expect(noteDescription).toContainText(note.description)        
+        await expect(noteDescription).toBeVisible()
+        await deleteUserViaUi(page)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
     test('Delete a note via UI', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
