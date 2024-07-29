@@ -258,6 +258,8 @@ export async function createNoteViaUi(page: Page, bypassParalelismNumber: string
     await expect(noteCardDescription).toContainText(note.description)        
     await expect(noteCardDescription).toBeVisible()
     await page.locator('[data-testid="toggle-note-switch"]').isChecked()
+    //To get rid of the iframe, reload() was used here
+    await page.reload()
     const url = page.url()
     const note_id = url.replace(/^([https://practice.expandtesting.com/notes/app/notes/]*)/g, '')
     // console.log(note_id)
