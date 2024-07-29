@@ -82,7 +82,7 @@ test.describe('/notes_ui', () => {
         await createUserViaUi(page, bypassParalelismNumber)
         await logInUserViaUi(page, bypassParalelismNumber)
         await createNoteViaUi(page, bypassParalelismNumber)
-        await page.click('button:has-text("Delete")')
+        await page.locator('[data-testid="note-delete"]').click()     
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
         const note = {
             note_title: body.note_title

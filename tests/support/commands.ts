@@ -209,7 +209,7 @@ export async function createUserViaUi(page: Page, bypassParalelismNumber: string
 }
 
 export async function deleteNoteViaUi(page: Page, bypassParalelismNumber: string) {
-    await page.click('button:has-text("Delete")')
+    await page.locator('[data-testid="note-delete"]').click()     
     const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
     const note = {
         note_title: body.note_title
