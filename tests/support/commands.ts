@@ -225,7 +225,9 @@ export async function createNoteViaUi(page: Page, bypassParalelismNumber: string
         user_email: body.user_email,
         user_id: body.user_id,
         user_name: body.user_name,
-        user_password: body.user_password
+        user_password: body.user_password,
+        //Here, there is the need to also read the token, so we will be able to use furter api custom commands
+        user_token: body.user_token
     }
     const note = {            
         title: faker.word.words(3),
@@ -272,6 +274,7 @@ export async function createNoteViaUi(page: Page, bypassParalelismNumber: string
         user_email: user.user_email,
         user_id: user.user_id,
         user_name: user.user_name,                
-        user_password: user.user_password,      
+        user_password: user.user_password,  
+        user_token: user.user_token     
     }), "utf8"); 
 }

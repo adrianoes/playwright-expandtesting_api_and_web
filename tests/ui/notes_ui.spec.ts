@@ -174,6 +174,20 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
+    test('Update the completed status of a note via UI', async ({ page }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()
+        await createUserViaUi(page, bypassParalelismNumber)
+        await logInUserViaUi(page, bypassParalelismNumber)
+        await createNoteViaUi(page, bypassParalelismNumber)
+        await page.click('button:has-text("Edit")') 
+        await page.getByTestId('note-completed').click()                
+        await page.click('button:has-text("Save")') 
+        const noteComplete = page.locator('[data-testid="toggle-note-switch"]')
+        await expect(noteComplete).not.toBeChecked()  
+        await deleteUserViaUi(page)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
     test('Delete a note via UI', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)

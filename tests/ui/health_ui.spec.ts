@@ -1,6 +1,6 @@
 import {test, expect } from '@playwright/test'
 
-test.describe('/users_api', () => {   
+test.describe('/health_ui', () => {   
 
     test('Check the healt of the app website via UI', async ({ page }) =>{
         await page.goto('app')
