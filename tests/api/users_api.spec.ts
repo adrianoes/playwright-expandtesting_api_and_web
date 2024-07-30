@@ -43,6 +43,26 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
+    test('Creates a new user account via API - Bad request', async ({ request }) => {    
+        const user = {            
+            //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
+            user_email: faker.internet.exampleEmail().toLowerCase(),
+            user_name: faker.person.fullName(), 
+            user_password: faker.internet.password({ length: 8 })
+        }
+        const responseCU = await request.post(`api/users/register`, {
+            data: {
+                name: user.user_name,
+                email: '@'+user.user_email,
+                password: user.user_password
+            }
+        });
+        const responseBodyCU = await responseCU.json() 
+        expect(responseBodyCU.message).toEqual("A valid email address is required")
+        expect(responseCU.status()).toEqual(400)    
+        console.log(responseBodyCU.message)  
+    })
+
     test('Log in as an existing user via API', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -77,6 +97,53 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
+    test('Log in as an existing user via API - Bad request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_email: body.user_email,
+            user_password: body.user_password
+        }
+        const responseLU = await request.post(`api/users/login`, {
+            data: {
+                email: '@'+user.user_email,
+                password: user.user_password
+            }
+        });
+        const responseBodyLU = await responseLU.json()
+        expect(responseBodyLU.message).toEqual("A valid email address is required")
+        expect(responseLU.status()).toEqual(400)    
+        console.log(responseBodyLU.message)  
+        //Login right so user can be deleted. 
+        await logInUserViaApi(request, bypassParalelismNumber)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
+    test('Log in as an existing user via API - Unauthorized Request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_email: body.user_email,
+            user_password: body.user_password
+        }
+        const responseLU = await request.post(`api/users/login`, {
+            data: {
+                email: user.user_email,
+                password: '@'+user.user_password
+            }
+        });
+        const responseBodyLU = await responseLU.json()
+        expect(responseBodyLU.message).toEqual("Incorrect email address or password")
+        expect(responseLU.status()).toEqual(401)    
+        console.log(responseBodyLU.message)  
+        await logInUserViaApi(request, bypassParalelismNumber)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
     test('Retrieve user profile information via API', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -102,6 +169,51 @@ test.describe('/users_api', () => {
         await deleteUserViaApi(request, bypassParalelismNumber) 
         await deleteJsonFile(bypassParalelismNumber)       
     }) 
+
+    test('Retrieve user profile information via API - Bad Request', async ({ request }) =>{
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_email: body.user_email,
+            user_id: body.user_id,
+            user_name: body.user_name,
+            user_password: body.user_password,
+            user_token: body.user_token
+        }
+        const responseRU = await request.get(`api/users/profile`,{
+            headers: { 
+                'X-Auth-Token': user.user_token,
+                'x-content-format': 'badRequest'
+            },
+        });
+        const responseBodyRU = await responseRU.json()
+        expect(responseBodyRU.message).toEqual("Invalid X-Content-Format header, Only application/json is supported.")
+        expect(responseRU.status()).toEqual(400)    
+        console.log(responseBodyRU.message)         
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
+    })
+
+    test('Retrieve user profile information via API - Unauthorized Request', async ({ request }) =>{
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_token: body.user_token
+        }
+        const responseRU = await request.get(`api/users/profile`,{
+            headers: { 'X-Auth-Token': '@'+user.user_token }
+        });
+        const responseBodyRU = await responseRU.json()
+        expect(responseBodyRU.message).toEqual("Access token is not valid or has expired, you will need to login")
+        expect(responseRU.status()).toEqual(401)    
+        console.log(responseBodyRU.message)         
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
+    })
 
     test('Update the user profile information via API', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
@@ -141,6 +253,66 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })  
 
+    test('Update the user profile information via API - Bad Request', async ({ request }) =>{
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_name: body.user_name,
+            user_token: body.user_token
+        }      
+        const updated_user = {  
+            updated_user_company: faker.internet.userName(), 
+            updated_user_phone: faker.string.numeric({ length: 12 }),         
+            updated_user_name: faker.person.fullName()                
+        }
+        const responseUU = await request.patch(`api/users/profile`, {
+            headers: { 'X-Auth-Token': user.user_token },
+            data: {
+                name: 6+'@'+'#',
+                phone: updated_user.updated_user_phone,
+                company: updated_user.updated_user_company
+            }
+        })
+        const responseBodyUU = await responseUU.json()
+        expect(responseBodyUU.message).toEqual('User name must be between 4 and 30 characters')
+        expect(responseUU.status()).toEqual(400)                    
+        console.log(responseBodyUU.message)         
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
+    }) 
+
+    test('Update the user profile information via API - Unauthorized Request', async ({ request }) =>{
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_name: body.user_name,
+            user_token: body.user_token
+        }      
+        const updated_user = {  
+            updated_user_company: faker.internet.userName(), 
+            updated_user_phone: faker.string.numeric({ length: 12 }),         
+            updated_user_name: faker.person.fullName()                
+        }
+        const responseUU = await request.patch(`api/users/profile`, {
+            headers: { 'X-Auth-Token': '@'+user.user_token },
+            data: {
+                name: updated_user.updated_user_name,
+                phone: updated_user.updated_user_phone,
+                company: updated_user.updated_user_company
+            }
+        })
+        const responseBodyUU = await responseUU.json()
+        expect(responseBodyUU.message).toEqual("Access token is not valid or has expired, you will need to login")
+        expect(responseUU.status()).toEqual(401)                    
+        console.log(responseBodyUU.message)         
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
+    }) 
+
     test('Change a user\'s password via API', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -165,7 +337,59 @@ test.describe('/users_api', () => {
         console.log(responseBodyCP.message)  
         await deleteUserViaApi(request, bypassParalelismNumber) 
         await deleteJsonFile(bypassParalelismNumber)       
-    })  
+    }) 
+    
+    test('Change a user\'s password via API - Bad Request', async ({ request }) =>{
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_password: body.user_password,
+            user_token: body.user_token
+        }    
+        const updated_password = faker.internet.password({ length: 8 })
+        const responseCP = await request.post(`api/users/change-password`, {
+            headers: { 'X-Auth-Token': user.user_token },
+            data: {
+                currentPassword: user.user_password,
+                newPassword: '123'
+            }
+        })
+        const responseBodyCP = await responseCP.json()
+        expect(user.user_password).not.toEqual(updated_password)  
+        expect(responseBodyCP.message).toEqual('New password must be between 6 and 30 characters')
+        expect(responseCP.status()).toEqual(400)                    
+        console.log(responseBodyCP.message)  
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
+    })
+
+    test('Change a user\'s password via API - Unauthorized Request', async ({ request }) =>{
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_password: body.user_password,
+            user_token: body.user_token
+        }    
+        const updated_password = faker.internet.password({ length: 8 })
+        const responseCP = await request.post(`api/users/change-password`, {
+            headers: { 'X-Auth-Token': '@'+user.user_token },
+            data: {
+                currentPassword: user.user_password,
+                newPassword: updated_password
+            }
+        })
+        const responseBodyCP = await responseCP.json()
+        expect(user.user_password).not.toEqual(updated_password)  
+        expect(responseBodyCP.message).toEqual('Access token is not valid or has expired, you will need to login')
+        expect(responseCP.status()).toEqual(401)                    
+        console.log(responseBodyCP.message)  
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
+    })
 
     test('Log out a user via API', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
@@ -186,6 +410,49 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })
 
+    test('Log out a user via API - Bad Request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user_token = body.user_token
+        const responseLOU = await request.delete(`api/users/logout`,{
+            headers: { 
+                'X-Auth-Token': user_token,
+                'x-content-format': 'badRequest'
+            },
+        })
+        const responseBodyLOU = await responseLOU.json()
+        expect(responseBodyLOU.message).toEqual("Invalid X-Content-Format header, Only application/json is supported.")
+        expect(responseLOU.status()).toEqual(400)
+        console.log(responseBodyLOU.message)
+        //When login out, token becomes invalid, so there is the need to log in again to delete the user.
+        //Login out was not executed so we can directly delete the user without the need to login again.
+        // await logInUserViaApi(request, bypassParalelismNumber) 
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)       
+    })
+
+    test('Log out a user via API - Unauthorized Request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user_token = body.user_token
+        const responseLOU = await request.delete(`api/users/logout`,{
+            headers: { 'X-Auth-Token': '@'+user_token },
+        })
+        const responseBodyLOU = await responseLOU.json()
+        expect(responseBodyLOU.message).toEqual("Access token is not valid or has expired, you will need to login")
+        expect(responseLOU.status()).toEqual(401)
+        console.log(responseBodyLOU.message)
+        //When login out, token becomes invalid, so there is the need to log in again to delete the user.
+        //Login out was not executed so we can directly delete the user without the need to login again.
+        // await logInUserViaApi(request, bypassParalelismNumber) 
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)     
+    })
+
     test('Delete user account via API', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -200,7 +467,46 @@ test.describe('/users_api', () => {
         expect(responseDU.status()).toEqual(200)
         console.log(responseBodyDU.message)
         await deleteJsonFile(bypassParalelismNumber)
-    })        
+    })    
+    
+    test('Delete user account via API - Bad Request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user_token = body.user_token
+        const responseDU = await request.delete(`api/users/delete-account`,{
+            headers: { 
+                'X-Auth-Token': user_token,
+                'x-content-format': 'badRequest'
+            },
+        })
+        const responseBodyDU = await responseDU.json()
+        expect(responseBodyDU.message).toEqual("Invalid X-Content-Format header, Only application/json is supported.")
+        expect(responseDU.status()).toEqual(400)
+        console.log(responseBodyDU.message)
+        //call deleteUserViaApi() to delete the user after verify the unauthorized condition above
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)
+    })  
+
+    test('Delete user account via API - Unauthorized Request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user_token = body.user_token
+        const responseDU = await request.delete(`api/users/delete-account`,{
+            headers: { 'X-Auth-Token': '@'+user_token },
+        })
+        const responseBodyDU = await responseDU.json()
+        expect(responseBodyDU.message).toEqual('Access token is not valid or has expired, you will need to login')
+        expect(responseDU.status()).toEqual(401)
+        console.log(responseBodyDU.message)
+        //call deleteUserViaApi() to delete the user after verify the unauthorized condition above
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)
+    })  
 })
 
 
