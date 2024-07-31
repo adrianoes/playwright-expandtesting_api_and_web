@@ -11,7 +11,7 @@ test.beforeAll(async () => {
 
 test.describe('/users_api', () => {   
 
-    test('Creates a new user account via API', async ({ request }) => {
+    test('Creates a new user account via API @API @BASIC @FULL', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()        
         const user = {            
             //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
@@ -43,7 +43,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Creates a new user account via API - Bad request', async ({ request }) => {    
+    test('Creates a new user account via API - Bad request @API @FULL @NEGATIVE', async ({ request }) => {    
         const user = {            
             //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
             user_email: faker.internet.exampleEmail().toLowerCase(),
@@ -63,7 +63,7 @@ test.describe('/users_api', () => {
         console.log(responseBodyCU.message)  
     })
 
-    test('Log in as an existing user via API', async ({ request }) => {
+    test('Log in as an existing user via API @API @BASIC @FULL', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
@@ -97,7 +97,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Log in as an existing user via API - Bad request', async ({ request }) => {
+    test('Log in as an existing user via API - Bad request @API @FULL @NEGATIVE', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
@@ -121,7 +121,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Log in as an existing user via API - Unauthorized Request', async ({ request }) => {
+    test('Log in as an existing user via API - Unauthorized Request @API @FULL @NEGATIVE', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
@@ -144,7 +144,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Retrieve user profile information via API', async ({ request }) =>{
+    test('Retrieve user profile information via API @API @BASIC @FULL', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -170,7 +170,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     }) 
 
-    test('Retrieve user profile information via API - Bad Request', async ({ request }) =>{
+    test('Retrieve user profile information via API - Bad Request @API @FULL @NEGATIVE', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -196,7 +196,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })
 
-    test('Retrieve user profile information via API - Unauthorized Request', async ({ request }) =>{
+    test('Retrieve user profile information via API - Unauthorized Request @API @FULL @NEGATIVE', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -215,7 +215,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })
 
-    test('Update the user profile information via API', async ({ request }) =>{
+    test('Update the user profile information via API @API @BASIC @FULL', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -253,7 +253,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })  
 
-    test('Update the user profile information via API - Bad Request', async ({ request }) =>{
+    test('Update the user profile information via API - Bad Request @API @FULL @NEGATIVE', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -283,7 +283,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     }) 
 
-    test('Update the user profile information via API - Unauthorized Request', async ({ request }) =>{
+    test('Update the user profile information via API - Unauthorized Request @API @FULL @NEGATIVE', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -313,7 +313,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     }) 
 
-    test('Change a user\'s password via API', async ({ request }) =>{
+    test('Change a user\'s password via API @API @BASIC @FULL', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -339,7 +339,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     }) 
     
-    test('Change a user\'s password via API - Bad Request', async ({ request }) =>{
+    test('Change a user\'s password via API - Bad Request @API @FULL @NEGATIVE', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -365,7 +365,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })
 
-    test('Change a user\'s password via API - Unauthorized Request', async ({ request }) =>{
+    test('Change a user\'s password via API - Unauthorized Request @API @FULL @NEGATIVE', async ({ request }) =>{
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -391,7 +391,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })
 
-    test('Log out a user via API', async ({ request }) => {
+    test('Log out a user via API @API @BASIC @FULL', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -410,7 +410,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })
 
-    test('Log out a user via API - Bad Request', async ({ request }) => {
+    test('Log out a user via API - Bad Request @API @FULL @NEGATIVE', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -433,7 +433,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)       
     })
 
-    test('Log out a user via API - Unauthorized Request', async ({ request }) => {
+    test('Log out a user via API - Unauthorized Request @API @FULL @NEGATIVE', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -453,7 +453,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)     
     })
 
-    test('Delete user account via API', async ({ request }) => {
+    test('Delete user account via API @API @BASIC @FULL', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -469,7 +469,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })    
     
-    test('Delete user account via API - Bad Request', async ({ request }) => {
+    test('Delete user account via API - Bad Request @API @FULL @NEGATIVE', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -490,7 +490,7 @@ test.describe('/users_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })  
 
-    test('Delete user account via API - Unauthorized Request', async ({ request }) => {
+    test('Delete user account via API - Unauthorized Request @API @FULL @NEGATIVE', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaApi(request, bypassParalelismNumber) 
@@ -507,6 +507,7 @@ test.describe('/users_api', () => {
         await deleteUserViaApi(request, bypassParalelismNumber) 
         await deleteJsonFile(bypassParalelismNumber)
     })  
+    
 })
 
 

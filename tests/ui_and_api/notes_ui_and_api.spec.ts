@@ -14,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('/notes_ui_and_api', () => { 
 
-    test('Create a new note via UI and API', async ({ page, request }) => {
+    test('Create a new note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -79,7 +79,7 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber) 
     })
 
-    test('Create a new note via UI and API - Invalid title', async ({ page, request }) => {
+    test('Create a new note via UI and API - Invalid title @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -105,7 +105,7 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber) 
     })
 
-    test('Create a new note via UI and API - Invalid description', async ({ page, request }) => {        
+    test('Create a new note via UI and API - Invalid description @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {        
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -131,7 +131,7 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber) 
     })
 
-    test('Get all notes via UI and API', async ({ page, request }) => {
+    test('Get all notes via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -202,7 +202,7 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber) 
     })
 
-    test('Update an existing note via UI and API', async ({ page, request }) => {
+    test('Update an existing note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -230,7 +230,7 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber)     
     })
     
-    test('Update an existing note via UI and API - Invalid title', async ({ page, request }) => {
+    test('Update an existing note via UI and API - Invalid title @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -254,7 +254,7 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber)     
     })
     
-    test('Update an existing note via UI and API - Invalid description', async ({ page, request }) => {
+    test('Update an existing note via UI and API - Invalid description @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -278,7 +278,7 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber)     
     })
 
-    test('Update the completed status of a note via UI and API', async ({ page, request }) => {
+    test('Update the completed status of a note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -294,7 +294,7 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber)     
     })
 
-    test('Delete a note via UI and API', async ({ page, request }) => {
+    test('Delete a note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -312,4 +312,5 @@ test.describe('/notes_ui_and_api', () => {
         await deleteUserViaApi(request, bypassParalelismNumber) 
         await deleteJsonFile(bypassParalelismNumber)     
     })
+    
 })

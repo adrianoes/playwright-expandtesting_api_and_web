@@ -2,7 +2,6 @@ import { test, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import { deleteJsonFile, logInUserViaUi, deleteUserViaUi, createUserViaUi, deleteNoteViaUi, createNoteViaUi } from '../support/commands'
 import fs from 'fs'
-import { title } from 'process';
 
 test.beforeAll(async () => {
     try {fs.unlinkSync(`tests/fixtures/testdata.json`)} catch(err) {throw err}
@@ -15,7 +14,7 @@ test.beforeEach(async ({ page }) => {
 
 test.describe('/notes_ui', () => {  
 
-    test('Create a new note via UI', async ({ page }) => {
+    test('Create a new note via UI @UI @BASIC @FULL', async ({ page }) => {
         //Playwright fails to recognize bypassParalelismNumber constant when it is inputed in beforeEach hook
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
@@ -80,7 +79,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Create a new note via UI - Invalid title', async ({ page }) => {
+    test('Create a new note via UI - Invalid title @UI @FULL @NEGATIVE', async ({ page }) => {
         //Playwright fails to recognize bypassParalelismNumber constant when it is inputed in beforeEach hook
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
@@ -107,7 +106,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Create a new note via UI - Invalid description', async ({ page }) => {
+    test('Create a new note via UI - Invalid description @UI @FULL @NEGATIVE', async ({ page }) => {
         //Playwright fails to recognize bypassParalelismNumber constant when it is inputed in beforeEach hook
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
@@ -134,7 +133,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Get all notes via UI', async ({ page }) => {
+    test('Get all notes via UI @UI @BASIC @FULL', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -203,7 +202,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Update an existing note via UI', async ({ page }) => {
+    test('Update an existing note via UI @UI @BASIC @FULL', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -229,7 +228,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Update an existing note via UI - Invalid title', async ({ page }) => {
+    test('Update an existing note via UI - Invalid title @UI @FULL @NEGATIVE', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -251,7 +250,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Update an existing note via UI - Invalid description', async ({ page }) => {
+    test('Update an existing note via UI - Invalid description @UI @FULL @NEGATIVE', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -273,7 +272,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Update the completed status of a note via UI', async ({ page }) => {
+    test('Update the completed status of a note via UI @UI @BASIC @FULL', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
         await logInUserViaUi(page, bypassParalelismNumber)
@@ -287,7 +286,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
-    test('Delete a note via UI', async ({ page }) => {
+    test('Delete a note via UI @UI @BASIC @FULL', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
         await logInUserViaUi(page, bypassParalelismNumber)

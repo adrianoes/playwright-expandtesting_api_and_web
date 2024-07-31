@@ -34,6 +34,9 @@ Check then both to add both options in context menu.
 - Execute ```npx playwright test --ui``` to run your tests with UI Mode. 
 - Execute ```npx playwright test``` to execute playwright in headless mode.
 - Hit :point_right:**Testing** button on left side bar in VSC and choose the tests you want to execute.
+- Execute ```npx playwright test --grep "@BASIC"``` to run the tests tagged with BASIC tag in Powershell.
+- Execute ```npx playwright test --grep-invert "@NEGATIVE"``` to run the tests not tagged with NEGATIVE tag in Powershell.
+- Execute ```npx playwright test --grep-invert "(?=.*@API)(?=.*@FULL)"``` to run the tests tagged with both API and FULL tags in Powershell.
 
 # Support:
 
@@ -52,6 +55,7 @@ Check then both to add both options in context menu.
 - [How to remove specific character surrounding a string?](https://stackoverflow.com/a/44537491/10519428)
 - [reload](https://playwright.dev/docs/api/class-page#page-reload)
 - [How to Check an Element's Value in Playwright](https://betterstack.com/community/questions/playwright-check-element-value/)
+- [Tag tests](https://playwright.dev/docs/test-annotations#tag-tests)
 
 # Tips:
 
