@@ -55,6 +55,66 @@ test.describe('/notes_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     }) 
 
+    test('Creates a new note via API - Bad request', async ({ request }) => {
+        //These first 4 lines code block are always repeating in the /notes suites. I ty to put them in a beforeEach block but they didn't work, because the second argument to bypass paralelism. When I find the time, I'll try to look for a better solution. 
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_token: body.user_token
+        }
+        const note = {            
+            note_title: faker.word.words(3),
+            note_description: faker.word.words(5),
+            note_category: faker.helpers.arrayElement(['Home', 'Work', 'Personal'])
+        }
+        const responseCN = await request.post(`api/notes`, {
+            headers: { 'X-Auth-Token': user.user_token },
+            data: {
+                category: 'a',
+                description: note.note_description,
+                title: note.note_title 
+            }
+        })
+        const responseBodyCN = await responseCN.json() 
+        expect(responseBodyCN.message).toEqual('Category must be one of the categories: Home, Work, Personal')
+        expect(responseBodyCN.status).toEqual(400)                
+        console.log(responseBodyCN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    }) 
+
+    test('Creates a new note via API - Unauthorized request', async ({ request }) => {
+        //These first 4 lines code block are always repeating in the /notes suites. I ty to put them in a beforeEach block but they didn't work, because the second argument to bypass paralelism. When I find the time, I'll try to look for a better solution. 
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_token: body.user_token
+        }
+        const note = {            
+            note_title: faker.word.words(3),
+            note_description: faker.word.words(5),
+            note_category: faker.helpers.arrayElement(['Home', 'Work', 'Personal'])
+        }
+        const responseCN = await request.post(`api/notes`, {
+            headers: { 'X-Auth-Token': '@'+user.user_token },
+            data: {
+                category: note.note_category,
+                description: note.note_description,
+                title: note.note_title 
+            }
+        })
+        const responseBodyCN = await responseCN.json() 
+        expect(responseBodyCN.message).toEqual("Access token is not valid or has expired, you will need to login")
+        expect(responseBodyCN.status).toEqual(401)                
+        console.log(responseBodyCN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    }) 
+
     test('Get all notes via API', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -109,6 +169,105 @@ test.describe('/notes_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     }) 
 
+    test('Get all notes via API - Bad request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_id: body.user_id,
+            user_token: body.user_token
+        }
+        const arrayCategory = [faker.helpers.arrayElement(['Home', 'Work', 'Personal']), 'Home', 'Work', 'Personal']           
+        const arrayCompleted = [false, false, false, true]  
+        const arrayTitle = [faker.word.words(3), faker.word.words(3), faker.word.words(3), faker.word.words(3)]
+        const arrayDescription = [faker.word.words(5), faker.word.words(5), faker.word.words(5), faker.word.words(5)] 
+        const arrayNote_id = [0, 0, 0, 0]
+        for (let k = 0; k < 4; k++) {
+            const responseCNs = await request.post(`api/notes`, {
+                headers: { 'X-Auth-Token': user.user_token },
+                data: {
+                    category: arrayCategory[k],
+                    completed: arrayCompleted[k],
+                    description: arrayDescription[k],
+                    title: arrayTitle[k]
+                }
+            })
+            const responseBodyCNs = await responseCNs.json()
+            expect(responseBodyCNs.data.category).toEqual(arrayCategory[k])
+            expect(responseBodyCNs.data.completed).toEqual(arrayCompleted[k])
+            expect(responseBodyCNs.data.description).toEqual(arrayDescription[k])
+            arrayNote_id[k] = responseBodyCNs.data.id  
+            expect(responseBodyCNs.data.title).toEqual(arrayTitle[k])
+            expect(responseBodyCNs.data.user_id).toEqual(user.user_id)  
+            expect(responseBodyCNs.message).toEqual('Note successfully created')
+            expect(responseBodyCNs.status).toBe(200)                
+            console.log(responseBodyCNs.message)                
+        } 
+        for (let k = 0; k < 4; k++) {
+            const responseGNs = await request.get(`api/notes`, {
+                headers: { 
+                    'X-Auth-Token': user.user_token,
+                    'x-content-format': 'badRequest'
+                },
+            })
+            const responseBodyGNs = await responseGNs.json() 
+            expect(responseBodyGNs.message).toEqual("Invalid X-Content-Format header, Only application/json is supported.")
+            expect(responseBodyGNs.status).toEqual(400)  
+            console.log(responseBodyGNs.message)
+        } 
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    }) 
+
+    test('Get all notes via API - Unauthorized request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_id: body.user_id,
+            user_token: body.user_token
+        }
+        const arrayCategory = [faker.helpers.arrayElement(['Home', 'Work', 'Personal']), 'Home', 'Work', 'Personal']           
+        const arrayCompleted = [false, false, false, true]  
+        const arrayTitle = [faker.word.words(3), faker.word.words(3), faker.word.words(3), faker.word.words(3)]
+        const arrayDescription = [faker.word.words(5), faker.word.words(5), faker.word.words(5), faker.word.words(5)] 
+        const arrayNote_id = [0, 0, 0, 0]
+        for (let k = 0; k < 4; k++) {
+            const responseCNs = await request.post(`api/notes`, {
+                headers: { 'X-Auth-Token': user.user_token },
+                data: {
+                    category: arrayCategory[k],
+                    completed: arrayCompleted[k],
+                    description: arrayDescription[k],
+                    title: arrayTitle[k]
+                }
+            })
+            const responseBodyCNs = await responseCNs.json()
+            expect(responseBodyCNs.data.category).toEqual(arrayCategory[k])
+            expect(responseBodyCNs.data.completed).toEqual(arrayCompleted[k])
+            expect(responseBodyCNs.data.description).toEqual(arrayDescription[k])
+            arrayNote_id[k] = responseBodyCNs.data.id  
+            expect(responseBodyCNs.data.title).toEqual(arrayTitle[k])
+            expect(responseBodyCNs.data.user_id).toEqual(user.user_id)  
+            expect(responseBodyCNs.message).toEqual('Note successfully created')
+            expect(responseBodyCNs.status).toBe(200)                
+            console.log(responseBodyCNs.message)                
+        } 
+        for (let k = 0; k < 4; k++) {
+            const responseGNs = await request.get(`api/notes`, {
+                headers: { 'X-Auth-Token': '@'+user.user_token },
+            })
+            const responseBodyGNs = await responseGNs.json() 
+            expect(responseBodyGNs.message).toEqual("Access token is not valid or has expired, you will need to login")
+            expect(responseBodyGNs.status).toEqual(401)  
+            console.log(responseBodyGNs.message)
+        } 
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    }) 
+
     test('Get note by ID via API', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -136,6 +295,63 @@ test.describe('/notes_api', () => {
         expect(responseBodyGN.data.user_id).toEqual(user.user_id)  
         expect(responseBodyGN.message).toEqual('Note successfully retrieved')
         expect(responseBodyGN.status).toEqual(200)  
+        console.log(responseBodyGN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
+    test('Get note by ID via API - Bad request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await createNoteViaApi(request, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_id: body.user_id,
+            user_token: body.user_token
+        }
+        const note = {
+            note_category: body.note_category,
+            note_description: body.note_description,
+            note_id: body.note_id,
+            note_title: body.note_title
+        }
+        const responseGN = await request.get(`api/notes/${note.note_id}`,{
+            headers: { 
+                'X-Auth-Token': user.user_token,
+                'x-content-format': 'badRequest'
+            },
+        });
+        const responseBodyGN = await responseGN.json()
+        expect(responseBodyGN.message).toEqual("Invalid X-Content-Format header, Only application/json is supported.")
+        expect(responseBodyGN.status).toEqual(400)  
+        console.log(responseBodyGN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
+    test('Get note by ID via API - Unauthorized request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await createNoteViaApi(request, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_id: body.user_id,
+            user_token: body.user_token
+        }
+        const note = {
+            note_category: body.note_category,
+            note_description: body.note_description,
+            note_id: body.note_id,
+            note_title: body.note_title
+        }
+        const responseGN = await request.get(`api/notes/${note.note_id}`,{
+            headers: { 'X-Auth-Token': '@'+user.user_token },
+        });
+        const responseBodyGN = await responseGN.json()
+        expect(responseBodyGN.message).toEqual("Access token is not valid or has expired, you will need to login")
+        expect(responseBodyGN.status).toEqual(401)  
         console.log(responseBodyGN.message)
         await deleteUserViaApi(request, bypassParalelismNumber)
         await deleteJsonFile(bypassParalelismNumber)
@@ -187,6 +403,82 @@ test.describe('/notes_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
+    test('Update an existing note via API - Bad request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await createNoteViaApi(request, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_id: body.user_id,
+            user_token: body.user_token
+        }
+        const note = {
+            note_category: body.note_category,
+            note_completed: faker.helpers.arrayElement([true, false]),
+            note_description: body.note_description,
+            note_id: body.note_id,
+            note_title: body.note_title
+        }
+        const updated_note = {
+            note_description: faker.word.words(5),
+            note_title: faker.word.words(3)
+        }
+        const responseUN = await request.put(`api/notes/${note.note_id}`, {
+            headers: { 'X-Auth-Token': user.user_token },
+            data: {
+                category: 'a',
+                completed: note.note_completed,
+                description: updated_note.note_description,
+                title: updated_note.note_title  
+            }
+        })
+        const responseBodyUN = await responseUN.json() 
+        expect(responseBodyUN.message).toEqual('Category must be one of the categories: Home, Work, Personal')
+        expect(responseBodyUN.status).toEqual(400)
+        console.log(responseBodyUN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
+    test('Update an existing note via API - Unauthorized request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await createNoteViaApi(request, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_id: body.user_id,
+            user_token: body.user_token
+        }
+        const note = {
+            note_category: body.note_category,
+            note_completed: faker.helpers.arrayElement([true, false]),
+            note_description: body.note_description,
+            note_id: body.note_id,
+            note_title: body.note_title
+        }
+        const updated_note = {
+            note_description: faker.word.words(5),
+            note_title: faker.word.words(3)
+        }
+        const responseUN = await request.put(`api/notes/${note.note_id}`, {
+            headers: { 'X-Auth-Token': '@'+user.user_token },
+            data: {
+                category: note.note_category,
+                completed: note.note_completed,
+                description: updated_note.note_description,
+                title: updated_note.note_title  
+            }
+        })
+        const responseBodyUN = await responseUN.json() 
+        expect(responseBodyUN.message).toEqual("Access token is not valid or has expired, you will need to login")
+        expect(responseBodyUN.status).toEqual(401)
+        console.log(responseBodyUN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
     test('Update the completed status of a note via API', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -224,6 +516,68 @@ test.describe('/notes_api', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
+    test('Update the completed status of a note via API - Bad request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await createNoteViaApi(request, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_id: body.user_id,
+            user_token: body.user_token
+        }
+        const note = {
+            note_category: body.note_category,
+            note_description: body.note_description,
+            note_id: body.note_id,
+            note_title: body.note_title
+        }
+        const updated_note_completed = false
+        const responseUCSN = await request.patch(`api/notes/${note.note_id}`, {
+            headers: { 'X-Auth-Token': user.user_token },
+            data: {
+                completed: 'a'
+            }
+        })
+        const responseBodyUCSN = await responseUCSN.json() 
+        expect(responseBodyUCSN.message).toEqual('Note completed status must be boolean')
+        expect(responseBodyUCSN.status).toEqual(400)
+        console.log(responseBodyUCSN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
+    test('Update the completed status of a note via API - Unauthorized request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await createNoteViaApi(request, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_id: body.user_id,
+            user_token: body.user_token
+        }
+        const note = {
+            note_category: body.note_category,
+            note_description: body.note_description,
+            note_id: body.note_id,
+            note_title: body.note_title
+        }
+        const updated_note_completed = false
+        const responseUCSN = await request.patch(`api/notes/${note.note_id}`, {
+            headers: { 'X-Auth-Token': '@'+user.user_token },
+            data: {
+                completed: false 
+            }
+        })
+        const responseBodyUCSN = await responseUCSN.json() 
+        expect(responseBodyUCSN.message).toEqual("Access token is not valid or has expired, you will need to login")
+        expect(responseBodyUCSN.status).toEqual(401)
+        console.log(responseBodyUCSN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
     test('Delete a note by ID via API', async ({ request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -238,6 +592,44 @@ test.describe('/notes_api', () => {
         const responseBodyDN = await responseDN.json()
         expect(responseBodyDN.message).toEqual('Note successfully deleted')
         expect(responseDN.status()).toEqual(200)
+        console.log(responseBodyDN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+    
+    test('Delete a note by ID via API - Bad request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await createNoteViaApi(request, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const note_id = body.note_id;
+        const user_token = body.user_token
+        const responseDN = await request.delete(`api/notes/+${2+note_id}`,{
+            headers: { 'X-Auth-Token': user_token }
+        })
+        const responseBodyDN = await responseDN.json()
+        expect(responseBodyDN.message).toEqual('Note ID must be a valid ID')
+        expect(responseDN.status()).toEqual(400)
+        console.log(responseBodyDN.message)
+        await deleteUserViaApi(request, bypassParalelismNumber)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+    
+    test('Delete a note by ID via API - Unauthorized request', async ({ request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaApi(request, bypassParalelismNumber) 
+        await createNoteViaApi(request, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const note_id = body.note_id;
+        const user_token = body.user_token
+        const responseDN = await request.delete(`api/notes/${note_id}`,{
+            headers: { 'X-Auth-Token': '@'+user_token },
+        })
+        const responseBodyDN = await responseDN.json()
+        expect(responseBodyDN.message).toEqual("Access token is not valid or has expired, you will need to login")
+        expect(responseDN.status()).toEqual(401)
         console.log(responseBodyDN.message)
         await deleteUserViaApi(request, bypassParalelismNumber)
         await deleteJsonFile(bypassParalelismNumber)
