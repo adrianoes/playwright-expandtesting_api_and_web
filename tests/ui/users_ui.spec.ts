@@ -49,6 +49,42 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
+    test('Creates a new user account via UI - Invalid e-mail', async ({ page }) => { 
+        const user = {
+            user_name: faker.person.fullName(), 
+            //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
+            user_email: faker.internet.exampleEmail().toLowerCase(),
+            user_password: faker.internet.password({ length: 8 })
+        }
+        await page.goto('app/register')
+        await page.getByTestId('register-email').fill('@'+user.user_email)
+        await page.getByTestId('register-name').fill(user.user_name)
+        await page.getByTestId('register-password').fill(user.user_password)
+        await page.getByTestId('register-confirm-password').fill(user.user_password)
+        await page.click('button:has-text("Register")')
+        const alertMessage = page.locator('[data-testid="alert-message"]')
+        await expect(alertMessage).toContainText('A valid email address is required')        
+        await expect(alertMessage).toBeVisible()   
+    })
+
+    test('Creates a new user account via UI - Wrong password', async ({ page }) => {  
+        const user = {
+            user_name: faker.person.fullName(), 
+            //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
+            user_email: faker.internet.exampleEmail().toLowerCase(),
+            user_password: faker.internet.password({ length: 8 })
+        }
+        await page.goto('app/register')
+        await page.getByTestId('register-email').fill(user.user_email)
+        await page.getByTestId('register-name').fill(user.user_name)
+        await page.getByTestId('register-password').fill(user.user_password)
+        await page.getByTestId('register-confirm-password').fill('e'+user.user_password)
+        await page.click('button:has-text("Register")')
+        const alertMessage = page.locator('.mb-3 > .invalid-feedback')
+        await expect(alertMessage).toContainText('Passwords don\'t match!')        
+        await expect(alertMessage).toBeVisible()  
+    })
+
     test('Log in as an existing user via UI', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
@@ -87,6 +123,50 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)    
     })
 
+    test('Log in as an existing user via UI - Wrong password', async ({ page }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()
+        await createUserViaUi(page, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_email: body.user_email,
+            user_id: body.user_id,
+            user_name: body.user_name,
+            user_password: body.user_password
+        }
+        await page.goto('app/login')
+        await page.getByTestId('login-email').fill(user.user_email)
+        await page.getByTestId('login-password').fill('e'+user.user_password)
+        await page.click('button:has-text("Login")') 
+        const alertMessage = page.locator('[data-testid="alert-message"]')
+        await expect(alertMessage).toContainText('Incorrect email address or password')        
+        await expect(alertMessage).toBeVisible()
+        await logInUserViaUi(page, bypassParalelismNumber)
+        await deleteUserViaUi(page)
+        await deleteJsonFile(bypassParalelismNumber)    
+    })
+
+    test('Log in as an existing user via UI - Invalid e-mail', async ({ page }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()
+        await createUserViaUi(page, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_email: body.user_email,
+            user_id: body.user_id,
+            user_name: body.user_name,
+            user_password: body.user_password
+        }
+        await page.goto('app/login')
+        await page.getByTestId('login-email').fill('e'+user.user_email)
+        await page.getByTestId('login-password').fill(user.user_password)
+        await page.click('button:has-text("Login")') 
+        const alertMessage = page.locator('[data-testid="alert-message"]')
+        await expect(alertMessage).toContainText('Incorrect email address or password')        
+        await expect(alertMessage).toBeVisible()
+        await logInUserViaUi(page, bypassParalelismNumber)
+        await deleteUserViaUi(page)
+        await deleteJsonFile(bypassParalelismNumber)   
+    })
+
     test('Retrieve user profile information via UI', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
@@ -111,6 +191,36 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(bypassParalelismNumber)
     })
 
+    test('Update user profile information via UI - Invalid company name', async ({ page }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()
+        await createUserViaUi(page, bypassParalelismNumber)
+        await logInUserViaUi(page, bypassParalelismNumber)
+        await page.goto('app/profile')
+        await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 12 }))
+        await page.locator('input[name="company"]').fill('e')
+        await page.click('button:has-text("Update profile")') 
+        const alertMessage = page.locator('.mb-4 > .invalid-feedback')
+        await expect(alertMessage).toContainText('company name should be between 4 and 30 characters')        
+        await expect(alertMessage).toBeVisible() 
+        await deleteUserViaUi(page)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
+    test('Update user profile information via UI - Invalid phone number', async ({ page }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()
+        await createUserViaUi(page, bypassParalelismNumber)
+        await logInUserViaUi(page, bypassParalelismNumber)
+        await page.goto('app/profile')
+        await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 2 }))
+        await page.locator('input[name="company"]').fill(faker.internet.userName())
+        await page.click('button:has-text("Update profile")') 
+        const alertMessage = page.locator(':nth-child(2) > .mb-2 > .invalid-feedback')
+        await expect(alertMessage).toContainText('Phone number should be between 8 and 20 digits')        
+        await expect(alertMessage).toBeVisible() 
+        await deleteUserViaUi(page)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
     test('Change a user\'s password via UI', async ({ page }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()
         await createUserViaUi(page, bypassParalelismNumber)
@@ -129,6 +239,27 @@ test.describe('/users_ui', () => {
         const passwordChanged = page.locator('[data-testid="alert-message"]')
         await expect(passwordChanged).toContainText('The password was successfully updated')        
         await expect(passwordChanged).toBeVisible()
+        await deleteUserViaUi(page)
+        await deleteJsonFile(bypassParalelismNumber)
+    })
+
+    test('Change a user\'s password via UI - Type same password', async ({ page }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()
+        await createUserViaUi(page, bypassParalelismNumber)
+        await logInUserViaUi(page, bypassParalelismNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const user = {
+            user_password: body.user_password,
+        }
+        await page.goto('app/profile')
+        await page.click('button:has-text("Change password")')
+        await page.getByTestId('current-password').fill(user.user_password)
+        await page.getByTestId('new-password').fill(user.user_password)
+        await page.getByTestId('confirm-password').fill(user.user_password)
+        await page.click('button:has-text("Update password")')
+        const alertMessage = page.locator('[data-testid="alert-message"]')
+        await expect(alertMessage).toContainText('The new password should be different from the current password')        
+        await expect(alertMessage).toBeVisible()
         await deleteUserViaUi(page)
         await deleteJsonFile(bypassParalelismNumber)
     })

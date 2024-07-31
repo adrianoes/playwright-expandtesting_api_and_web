@@ -79,6 +79,58 @@ test.describe('/notes_ui_and_api', () => {
         await deleteJsonFile(bypassParalelismNumber) 
     })
 
+    test('Create a new note via UI and API - Invalid title', async ({ page, request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaUi(page, bypassParalelismNumber)
+        const note = {            
+            description: faker.word.words(5),
+            category: faker.helpers.arrayElement(['Home', 'Work', 'Personal']),
+            completed: faker.number.int({ min: 1, max: 2 })
+        }
+        await page.goto('app/')
+        await page.click('button:has-text("+ Add Note")') 
+        await page.locator('[name="category"]').selectOption(note.category)
+        //Playwright has no support for click(n times), so we create a for with max random limit
+        for (let k = 0; k < note.completed; k++) {
+            await page.getByTestId('note-completed').click()                
+        } 
+        await page.locator('input[name="title"]').fill('e')
+        await page.locator('textarea[name="description"]').fill(note.description)
+        await page.click('button:has-text("Create")') 
+        const alertMessage = page.locator(':nth-child(3) > .invalid-feedback')
+        await expect(alertMessage).toContainText('Title should be between 4 and 100 characters')        
+        await expect(alertMessage).toBeVisible()
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber) 
+    })
+
+    test('Create a new note via UI and API - Invalid description', async ({ page, request }) => {        
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaUi(page, bypassParalelismNumber)
+        const note = {            
+            title: faker.word.words(3),
+            category: faker.helpers.arrayElement(['Home', 'Work', 'Personal']),
+            completed: faker.number.int({ min: 1, max: 2 })
+        }
+        await page.goto('app/')
+        await page.click('button:has-text("+ Add Note")') 
+        await page.locator('[name="category"]').selectOption(note.category)
+        //Playwright has no support for click(n times), so we create a for with max random limit
+        for (let k = 0; k < note.completed; k++) {
+            await page.getByTestId('note-completed').click()                
+        } 
+        await page.locator('input[name="title"]').fill(note.title)
+        await page.locator('textarea[name="description"]').fill('e')
+        await page.click('button:has-text("Create")') 
+        const alertMessage = page.locator(':nth-child(4) > .invalid-feedback')
+        await expect(alertMessage).toContainText('Description should be between 4 and 1000 characters')        
+        await expect(alertMessage).toBeVisible()
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber) 
+    })
+
     test('Get all notes via UI and API', async ({ page, request }) => {
         const bypassParalelismNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, bypassParalelismNumber) 
@@ -174,6 +226,54 @@ test.describe('/notes_ui_and_api', () => {
         const noteDescription = page.locator('[data-testid="note-card-description"]')
         await expect(noteDescription).toContainText(note.description)        
         await expect(noteDescription).toBeVisible()
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)     
+    })
+    
+    test('Update an existing note via UI and API - Invalid title', async ({ page, request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaUi(page, bypassParalelismNumber)
+        await createNoteViaApi(request, bypassParalelismNumber)
+        //goto() will show api created note
+        await page.goto('app')
+        await page.click('button:has-text("Edit")') 
+        const note = {            
+            description: faker.word.words(5),
+            category: faker.helpers.arrayElement(['Home', 'Work', 'Personal'])
+        }
+        await page.locator('[name="category"]').selectOption(note.category)
+        await page.locator('[data-testid="note-completed"]').check()
+        await page.locator('input[name="title"]').fill('e')
+        await page.locator('textarea[name="description"]').fill(note.description)
+        await page.click('button:has-text("Save")') 
+        const alertMessage = page.locator(':nth-child(3) > .invalid-feedback')
+        await expect(alertMessage).toContainText('Title should be between 4 and 100 characters')        
+        await expect(alertMessage).toBeVisible()
+        await deleteUserViaApi(request, bypassParalelismNumber) 
+        await deleteJsonFile(bypassParalelismNumber)     
+    })
+    
+    test('Update an existing note via UI and API - Invalid description', async ({ page, request }) => {
+        const bypassParalelismNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, bypassParalelismNumber) 
+        await logInUserViaUi(page, bypassParalelismNumber)
+        await createNoteViaApi(request, bypassParalelismNumber)
+        //goto() will show api created note
+        await page.goto('app')
+        await page.click('button:has-text("Edit")') 
+        const note = {           
+            title: faker.word.words(3), 
+            category: faker.helpers.arrayElement(['Home', 'Work', 'Personal'])
+        }
+        await page.locator('[name="category"]').selectOption(note.category)
+        await page.locator('[data-testid="note-completed"]').check()
+        await page.locator('input[name="title"]').fill(note.title)
+        await page.locator('textarea[name="description"]').fill('e')
+        await page.click('button:has-text("Save")') 
+        const alertMessage = page.locator(':nth-child(4) > .invalid-feedback')
+        await expect(alertMessage).toContainText('Description should be between 4 and 1000 characters')        
+        await expect(alertMessage).toBeVisible()
         await deleteUserViaApi(request, bypassParalelismNumber) 
         await deleteJsonFile(bypassParalelismNumber)     
     })
