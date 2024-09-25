@@ -15,10 +15,10 @@ test.beforeEach(async ({ page }) => {
 test.describe('/notes_ui_and_api', () => { 
 
     test('Create a new note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
             user_id: body.user_id,
@@ -63,7 +63,7 @@ test.describe('/notes_ui_and_api', () => {
         const url = page.url()
         const note_id = url.replace(/^([https://practice.expandtesting.com/notes/app/notes/]*)/g, '')
         // console.log(note_id)
-        fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+        fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
             note_id: note_id,
             note_category: note.category,
             note_completed: note.completed,
@@ -75,14 +75,14 @@ test.describe('/notes_ui_and_api', () => {
             user_password: user.user_password,
             user_token: user.user_token      
         }), "utf8"); 
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber) 
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber) 
     })
 
     test('Create a new note via UI and API - Invalid title @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
         const note = {            
             description: faker.word.words(5),
             category: faker.helpers.arrayElement(['Home', 'Work', 'Personal']),
@@ -101,14 +101,14 @@ test.describe('/notes_ui_and_api', () => {
         const alertMessage = page.locator(':nth-child(3) > .invalid-feedback')
         await expect(alertMessage).toContainText('Title should be between 4 and 100 characters')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber) 
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber) 
     })
 
     test('Create a new note via UI and API - Invalid description @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {        
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
         const note = {            
             title: faker.word.words(3),
             category: faker.helpers.arrayElement(['Home', 'Work', 'Personal']),
@@ -127,15 +127,15 @@ test.describe('/notes_ui_and_api', () => {
         const alertMessage = page.locator(':nth-child(4) > .invalid-feedback')
         await expect(alertMessage).toContainText('Description should be between 4 and 1000 characters')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber) 
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber) 
     })
 
     test('Get all notes via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {   
             user_email: body.user_email,
             user_id: body.user_id,  
@@ -169,7 +169,7 @@ test.describe('/notes_ui_and_api', () => {
             await expect(colorIndex).toHaveCSS('background-color', arrayColor[k])
         } 
         await page.locator(':nth-child('+arrayIndex[3]+') > [data-testid="note-card"] > .card-footer > [data-testid="toggle-note-switch"]').check()
-        fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+        fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
             note_category_1: arrayCategory[0],
             note_description_1: arrayDescription[0],
             note_title_1: arrayTitle[0],
@@ -198,15 +198,15 @@ test.describe('/notes_ui_and_api', () => {
             await page.locator(':nth-child('+arrayIndex[k]+') > [data-testid="note-card"] > .card-footer > div > [data-testid="note-delete"]').click()        
             await page.locator('[data-testid="note-delete-confirm"]').click()
         }
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber) 
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber) 
     })
 
     test('Update an existing note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
-        await createNoteViaApi(request, bypassParalelismNumber)
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
+        await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
         await page.click('button:has-text("Edit")') 
@@ -226,15 +226,15 @@ test.describe('/notes_ui_and_api', () => {
         const noteDescription = page.locator('[data-testid="note-card-description"]')
         await expect(noteDescription).toContainText(note.description)        
         await expect(noteDescription).toBeVisible()
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber)     
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber)     
     })
     
     test('Update an existing note via UI and API - Invalid title @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
-        await createNoteViaApi(request, bypassParalelismNumber)
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
+        await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
         await page.click('button:has-text("Edit")') 
@@ -250,15 +250,15 @@ test.describe('/notes_ui_and_api', () => {
         const alertMessage = page.locator(':nth-child(3) > .invalid-feedback')
         await expect(alertMessage).toContainText('Title should be between 4 and 100 characters')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber)     
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber)     
     })
     
     test('Update an existing note via UI and API - Invalid description @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
-        await createNoteViaApi(request, bypassParalelismNumber)
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
+        await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
         await page.click('button:has-text("Edit")') 
@@ -274,15 +274,15 @@ test.describe('/notes_ui_and_api', () => {
         const alertMessage = page.locator(':nth-child(4) > .invalid-feedback')
         await expect(alertMessage).toContainText('Description should be between 4 and 1000 characters')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber)     
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber)     
     })
 
     test('Update the completed status of a note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
-        await createNoteViaApi(request, bypassParalelismNumber)
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
+        await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
         await page.click('button:has-text("Edit")') 
@@ -290,27 +290,27 @@ test.describe('/notes_ui_and_api', () => {
         await page.click('button:has-text("Save")') 
         const noteComplete = page.locator('[data-testid="toggle-note-switch"]')
         await expect(noteComplete).not.toBeChecked() 
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber)     
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber)     
     })
 
     test('Delete a note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaUi(page, bypassParalelismNumber)
-        await createNoteViaApi(request, bypassParalelismNumber)
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaUi(page, randomNumber)
+        await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
         await page.locator('[data-testid="note-delete"]').click()     
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const note = {
             note_title: body.note_title
         }
         const noteModal = page.locator('[class="modal-content"]')
         await expect(noteModal).toContainText(note.note_title)
         await page.locator('[data-testid="note-delete-confirm"]').click()        
-        await deleteUserViaApi(request, bypassParalelismNumber) 
-        await deleteJsonFile(bypassParalelismNumber)     
+        await deleteUserViaApi(request, randomNumber) 
+        await deleteJsonFile(randomNumber)     
     })
     
 })

@@ -13,10 +13,10 @@ test.describe('/notes_api', () => {
 
     test('Creates a new note via API @API @BASIC @FULL', async ({ request }) => {
         //These first 4 lines code block are always repeating in the /notes suites. I ty to put them in a beforeEach block but they didn't work, because the second argument to bypass paralelism. When I find the time, I'll try to look for a better solution. 
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -42,25 +42,25 @@ test.describe('/notes_api', () => {
         expect(responseBodyCN.message).toEqual('Note successfully created')
         expect(responseBodyCN.status).toEqual(200)                
         console.log(responseBodyCN.message)
-        fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+        fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
             note_category: responseBodyCN.data.category,
             note_description: responseBodyCN.data.decription,
             note_id: responseBodyCN.data.id,
             note_title: responseBodyCN.data.title,
             user_token: user.user_token           
         }), "utf8"); 
-        //This command will be kept for studying purpose only since there is already a cy.deleteUserViaApi() to delete user right away.
-        await deleteNoteViaApi(request, bypassParalelismNumber)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        //This command will be kept for studying purpose only since there is already a deleteUserViaApi() to delete user right away.
+        await deleteNoteViaApi(request, randomNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     }) 
 
-    test('Creates a new note via API - Bad request @API @FULL @NEGATIVE', async ({ request }) => {
+    test('Creates a new note via API - bad request @API @FULL @NEGATIVE', async ({ request }) => {
         //These first 4 lines code block are always repeating in the /notes suites. I ty to put them in a beforeEach block but they didn't work, because the second argument to bypass paralelism. When I find the time, I'll try to look for a better solution. 
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_token: body.user_token
         }
@@ -81,16 +81,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyCN.message).toEqual('Category must be one of the categories: Home, Work, Personal')
         expect(responseBodyCN.status).toEqual(400)                
         console.log(responseBodyCN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     }) 
 
-    test('Creates a new note via API - Unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
+    test('Creates a new note via API - unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
         //These first 4 lines code block are always repeating in the /notes suites. I ty to put them in a beforeEach block but they didn't work, because the second argument to bypass paralelism. When I find the time, I'll try to look for a better solution. 
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_token: body.user_token
         }
@@ -111,15 +111,15 @@ test.describe('/notes_api', () => {
         expect(responseBodyCN.message).toEqual("Access token is not valid or has expired, you will need to login")
         expect(responseBodyCN.status).toEqual(401)                
         console.log(responseBodyCN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     }) 
 
     test('Get all notes via API @API @BASIC @FULL', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -165,15 +165,15 @@ test.describe('/notes_api', () => {
             expect(responseBodyGNs.status).toEqual(200)  
             console.log(responseBodyGNs.message)
         } 
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     }) 
 
-    test('Get all notes via API - Bad request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Get all notes via API - bad request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -216,15 +216,15 @@ test.describe('/notes_api', () => {
             expect(responseBodyGNs.status).toEqual(400)  
             console.log(responseBodyGNs.message)
         } 
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     }) 
 
-    test('Get all notes via API - Unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Get all notes via API - unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -264,16 +264,16 @@ test.describe('/notes_api', () => {
             expect(responseBodyGNs.status).toEqual(401)  
             console.log(responseBodyGNs.message)
         } 
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     }) 
 
     test('Get note by ID via API @API @BASIC @FULL', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -296,16 +296,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyGN.message).toEqual('Note successfully retrieved')
         expect(responseBodyGN.status).toEqual(200)  
         console.log(responseBodyGN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
-    test('Get note by ID via API - Bad request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Get note by ID via API - bad request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -326,16 +326,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyGN.message).toEqual("Invalid X-Content-Format header, Only application/json is supported.")
         expect(responseBodyGN.status).toEqual(400)  
         console.log(responseBodyGN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
-    test('Get note by ID via API - Unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Get note by ID via API - unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -353,16 +353,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyGN.message).toEqual("Access token is not valid or has expired, you will need to login")
         expect(responseBodyGN.status).toEqual(401)  
         console.log(responseBodyGN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
     test('Update an existing note via API @API @BASIC @FULL', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -399,16 +399,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyUN.message).toEqual("Note successfully Updated")
         expect(responseBodyUN.status).toEqual(200)
         console.log(responseBodyUN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
-    test('Update an existing note via API - Bad request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Update an existing note via API - bad request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -437,16 +437,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyUN.message).toEqual('Category must be one of the categories: Home, Work, Personal')
         expect(responseBodyUN.status).toEqual(400)
         console.log(responseBodyUN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
-    test('Update an existing note via API - Unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Update an existing note via API - unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -475,16 +475,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyUN.message).toEqual("Access token is not valid or has expired, you will need to login")
         expect(responseBodyUN.status).toEqual(401)
         console.log(responseBodyUN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
     test('Update the completed status of a note via API @API @BASIC @FULL', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -512,16 +512,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyUCSN.message).toEqual("Note successfully Updated")
         expect(responseBodyUCSN.status).toEqual(200)
         console.log(responseBodyUCSN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
-    test('Update the completed status of a note via API - Bad request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Update the completed status of a note via API - bad request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -543,16 +543,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyUCSN.message).toEqual('Note completed status must be boolean')
         expect(responseBodyUCSN.status).toEqual(400)
         console.log(responseBodyUCSN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
-    test('Update the completed status of a note via API - Unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Update the completed status of a note via API - unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_id: body.user_id,
             user_token: body.user_token
@@ -574,16 +574,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyUCSN.message).toEqual("Access token is not valid or has expired, you will need to login")
         expect(responseBodyUCSN.status).toEqual(401)
         console.log(responseBodyUCSN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
 
     test('Delete a note by ID via API @API @BASIC @FULL', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const note_id = body.note_id;
         const user_token = body.user_token
         const responseDN = await request.delete(`api/notes/${note_id}`,{
@@ -593,16 +593,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyDN.message).toEqual('Note successfully deleted')
         expect(responseDN.status()).toEqual(200)
         console.log(responseBodyDN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
     
-    test('Delete a note by ID via API - Bad request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Delete a note by ID via API - bad request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const note_id = body.note_id;
         const user_token = body.user_token
         const responseDN = await request.delete(`api/notes/+${2+note_id}`,{
@@ -612,16 +612,16 @@ test.describe('/notes_api', () => {
         expect(responseBodyDN.message).toEqual('Note ID must be a valid ID')
         expect(responseDN.status()).toEqual(400)
         console.log(responseBodyDN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
     
-    test('Delete a note by ID via API - Unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
-        const bypassParalelismNumber = faker.finance.creditCardNumber()          
-        await createUserViaApi(request, bypassParalelismNumber) 
-        await logInUserViaApi(request, bypassParalelismNumber) 
-        await createNoteViaApi(request, bypassParalelismNumber)
-        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    test('Delete a note by ID via API - unauthorized request @API @FULL @NEGATIVE', async ({ request }) => {
+        const randomNumber = faker.finance.creditCardNumber()          
+        await createUserViaApi(request, randomNumber) 
+        await logInUserViaApi(request, randomNumber) 
+        await createNoteViaApi(request, randomNumber)
+        const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const note_id = body.note_id;
         const user_token = body.user_token
         const responseDN = await request.delete(`api/notes/${note_id}`,{
@@ -631,8 +631,8 @@ test.describe('/notes_api', () => {
         expect(responseBodyDN.message).toEqual("Access token is not valid or has expired, you will need to login")
         expect(responseDN.status()).toEqual(401)
         console.log(responseBodyDN.message)
-        await deleteUserViaApi(request, bypassParalelismNumber)
-        await deleteJsonFile(bypassParalelismNumber)
+        await deleteUserViaApi(request, randomNumber)
+        await deleteJsonFile(randomNumber)
     })
     
 })

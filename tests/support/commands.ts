@@ -2,8 +2,8 @@ import { APIRequestContext, expect, Page } from '@playwright/test'
 import { faker } from '@faker-js/faker'
 import fs from 'fs'
 
-export async function logInUserViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
-    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+export async function logInUserViaApi(request: APIRequestContext, randomNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const user = {
         user_email: body.user_email,
         user_id: body.user_id,
@@ -23,7 +23,7 @@ export async function logInUserViaApi(request: APIRequestContext, bypassParaleli
     expect(responseBodyLU.message).toEqual('Login successful')
     expect(responseLU.status()).toEqual(200)    
     console.log(responseBodyLU.message)   
-    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
         user_email: user.user_email,
         user_id: user.user_id,
         user_name: user.user_name,
@@ -32,8 +32,8 @@ export async function logInUserViaApi(request: APIRequestContext, bypassParaleli
     }), "utf8");
 }
 
-export async function deleteUserViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
-    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+export async function deleteUserViaApi(request: APIRequestContext, randomNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const user_token = body.user_token
     const responseDU = await request.delete(`api/users/delete-account`,{
         headers: { 'X-Auth-Token': user_token }
@@ -44,7 +44,7 @@ export async function deleteUserViaApi(request: APIRequestContext, bypassParalel
     console.log(responseBodyDU.message)
 }
 
-export async function createUserViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
+export async function createUserViaApi(request: APIRequestContext, randomNumber: string) {
     const user = {            
         //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
         user_email: faker.internet.exampleEmail().toLowerCase(),
@@ -64,7 +64,7 @@ export async function createUserViaApi(request: APIRequestContext, bypassParalel
     expect(responseBodyCU.message).toEqual('User account created successfully')
     expect(responseCU.status()).toEqual(201)    
     console.log(responseBodyCU.message)   
-    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
         user_email: user.user_email,
         user_id:responseBodyCU.data.id,
         user_name: user.user_name,                
@@ -72,8 +72,8 @@ export async function createUserViaApi(request: APIRequestContext, bypassParalel
     }), "utf8"); 
 }
 
-export async function deleteNoteViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
-    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+export async function deleteNoteViaApi(request: APIRequestContext, randomNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const note_id = body.note_id;
     const user_token = body.user_token
     const responseDN = await request.delete(`api/notes/${note_id}`,{
@@ -85,8 +85,8 @@ export async function deleteNoteViaApi(request: APIRequestContext, bypassParalel
     console.log(responseBodyDN.message)
 }
 
-export async function createNoteViaApi(request: APIRequestContext, bypassParalelismNumber: string) {
-    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+export async function createNoteViaApi(request: APIRequestContext, randomNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const user = {
         user_id: body.user_id,
         user_token: body.user_token
@@ -112,7 +112,7 @@ export async function createNoteViaApi(request: APIRequestContext, bypassParalel
     expect(responseBodyCN.message).toEqual('Note successfully created')
     expect(responseBodyCN.status).toEqual(200)                
     console.log(responseBodyCN.message)
-    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
         note_category: responseBodyCN.data.category,
         note_description: responseBodyCN.data.description,
         note_id: responseBodyCN.data.id,
@@ -130,8 +130,8 @@ export async function getFullFilledResponseLogIn(page: Page) {
     return page.waitForResponse('/notes/api/users/login')
 }
 
-export async function logInUserViaUi(page: Page, bypassParalelismNumber: string) {
-    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+export async function logInUserViaUi(page: Page, randomNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const user = {
         user_email: body.user_email,
         user_id: body.user_id,
@@ -155,7 +155,7 @@ export async function logInUserViaUi(page: Page, bypassParalelismNumber: string)
     const userName = page.locator('[data-testid="user-name"]')
     await expect(userName).toHaveValue(user.user_name)        
     await expect(userName).toBeVisible()    
-    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
         user_email: user.user_email,
         user_id: user.user_id,
         user_name: user.user_name,
@@ -164,8 +164,8 @@ export async function logInUserViaUi(page: Page, bypassParalelismNumber: string)
     }), "utf8");
 }
 
-export async function deleteJsonFile(bypassParalelismNumber: string) {
-    try {fs.unlinkSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`)} catch(err) {throw err}
+export async function deleteJsonFile(randomNumber: string) {
+    try {fs.unlinkSync(`tests/fixtures/testdata-${randomNumber}.json`)} catch(err) {throw err}
 }
 
 export async function deleteUserViaUi(page: Page) {
@@ -177,7 +177,7 @@ export async function deleteUserViaUi(page: Page) {
     await expect(alertMessage).toBeVisible()
 }
 
-export async function createUserViaUi(page: Page, bypassParalelismNumber: string) {
+export async function createUserViaUi(page: Page, randomNumber: string) {
     const user = {
         user_name: faker.person.fullName(), 
         //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
@@ -199,7 +199,7 @@ export async function createUserViaUi(page: Page, bypassParalelismNumber: string
     const userRegistered = page.locator('b')
     await expect(userRegistered).toContainText('User account created successfully')        
     await expect(userRegistered).toBeVisible() 
-    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
         user_email: user.user_email,
         user_id: responseBody.data.id,
         user_name: user.user_name,                
@@ -208,9 +208,9 @@ export async function createUserViaUi(page: Page, bypassParalelismNumber: string
     // console.log(user_id)  
 }
 
-export async function deleteNoteViaUi(page: Page, bypassParalelismNumber: string) {
+export async function deleteNoteViaUi(page: Page, randomNumber: string) {
     await page.locator('[data-testid="note-delete"]').click()     
-    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const note = {
         note_title: body.note_title
     }
@@ -219,8 +219,8 @@ export async function deleteNoteViaUi(page: Page, bypassParalelismNumber: string
     await page.locator('[data-testid="note-delete-confirm"]').click()  
 }
 
-export async function createNoteViaUi(page: Page, bypassParalelismNumber: string) {
-    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`, "utf8"))
+export async function createNoteViaUi(page: Page, randomNumber: string) {
+    const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const user = {
         user_email: body.user_email,
         user_id: body.user_id,
@@ -265,7 +265,7 @@ export async function createNoteViaUi(page: Page, bypassParalelismNumber: string
     const url = page.url()
     const note_id = url.replace(/^([https://practice.expandtesting.com/notes/app/notes/]*)/g, '')
     // console.log(note_id)
-    fs.writeFileSync(`tests/fixtures/testdata-${bypassParalelismNumber}.json`,JSON.stringify({
+    fs.writeFileSync(`tests/fixtures/testdata-${randomNumber}.json`,JSON.stringify({
         note_id: note_id,
         note_category: note.category,
         note_completed: note.completed,
