@@ -12,9 +12,9 @@ test.beforeEach(async ({ page }) => {
     await page.goto('app')
 });
 
-test.describe('/users_ui', () => {  
+test.describe('/users_web', () => {  
 
-    test('Creates a new user account via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Creates a new user account via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()  
         const user = {
             user_name: faker.person.fullName(), 
@@ -49,7 +49,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Creates a new user account via UI - Invalid e-mail @UI @FULL @NEGATIVE', async ({ page }) => { 
+    test('Creates a new user account via WEB - Invalid e-mail @WEB @FULL @NEGATIVE', async ({ page }) => { 
         const user = {
             user_name: faker.person.fullName(), 
             //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
@@ -67,7 +67,7 @@ test.describe('/users_ui', () => {
         await expect(alertMessage).toBeVisible()   
     })
 
-    test('Creates a new user account via UI - Wrong password @UI @FULL @NEGATIVE', async ({ page }) => {  
+    test('Creates a new user account via WEB - Wrong password @WEB @FULL @NEGATIVE', async ({ page }) => {  
         const user = {
             user_name: faker.person.fullName(), 
             //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
@@ -85,7 +85,7 @@ test.describe('/users_ui', () => {
         await expect(alertMessage).toBeVisible()  
     })
 
-    test('Log in as an existing user via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Log in as an existing user via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
@@ -123,7 +123,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)    
     })
 
-    test('Log in as an existing user via UI - Wrong password @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Log in as an existing user via WEB - Wrong password @WEB @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
@@ -145,7 +145,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)    
     })
 
-    test('Log in as an existing user via UI - Invalid e-mail @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Log in as an existing user via WEB - Invalid e-mail @WEB @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
@@ -167,7 +167,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)   
     })
 
-    test('Retrieve user profile information via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Retrieve user profile information via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -177,7 +177,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Update user profile information via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Update user profile information via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -192,7 +192,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Update user profile information via UI - Invalid company name @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Update user profile information via WEB - Invalid company name @WEB @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -207,7 +207,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Update user profile information via UI - Invalid phone number @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Update user profile information via WEB - Invalid phone number @WEB @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -222,7 +222,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Change a user\'s password via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Change a user\'s password via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -244,7 +244,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Change a user\'s password via UI - Type same password @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Change a user\'s password via WEB - Type same password @WEB @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -265,7 +265,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Log out a user via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Log out a user via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -278,7 +278,7 @@ test.describe('/users_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Delete user account via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Delete user account via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)

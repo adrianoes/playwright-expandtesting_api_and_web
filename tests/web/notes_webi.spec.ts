@@ -12,9 +12,9 @@ test.beforeEach(async ({ page }) => {
     await page.goto('app')
 });
 
-test.describe('/notes_ui', () => {  
+test.describe('/notes_web', () => {  
 
-    test('Create a new note via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Create a new note via WEB @WEB @BASIC @FULL', async ({ page }) => {
         //Playwright fails to recognize randomNumber constant when it is inputed in beforeEach hook
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
@@ -79,7 +79,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Create a new note via UI - Invalid title @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Create a new note via WEB - Invalid title @WEB @FULL @NEGATIVE', async ({ page }) => {
         //Playwright fails to recognize randomNumber constant when it is inputed in beforeEach hook
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
@@ -106,7 +106,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Create a new note via UI - Invalid description @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Create a new note via WEB - Invalid description @WEB @FULL @NEGATIVE', async ({ page }) => {
         //Playwright fails to recognize randomNumber constant when it is inputed in beforeEach hook
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
@@ -133,7 +133,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Get all notes via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Get all notes via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -202,7 +202,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Update an existing note via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Update an existing note via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -228,7 +228,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Update an existing note via UI - Invalid title @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Update an existing note via WEB - Invalid title @WEB @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -250,7 +250,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Update an existing note via UI - Invalid description @UI @FULL @NEGATIVE', async ({ page }) => {
+    test('Update an existing note via WEB - Invalid description @WEB @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -272,7 +272,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Update the completed status of a note via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Update the completed status of a note via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
@@ -286,7 +286,7 @@ test.describe('/notes_ui', () => {
         await deleteJsonFile(randomNumber)
     })
 
-    test('Delete a note via UI @UI @BASIC @FULL', async ({ page }) => {
+    test('Delete a note via WEB @WEB @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
         await createUserViaWeb(page, randomNumber)
         await logInUserViaWeb(page, randomNumber)
