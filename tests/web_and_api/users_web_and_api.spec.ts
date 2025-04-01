@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
-import { createUserViaApi, logInUserViaApi, deleteUserViaApi, deleteJsonFile, getFullFilledResponseCU, getFullFilledResponseLogIn, logInUserViaUi } from '../support/commands'
+import { createUserViaApi, logInUserViaApi, deleteUserViaApi, deleteJsonFile, getFullFilledResponseCU, getFullFilledResponseLogIn, logInUserViaWeb } from '../support/commands'
 import fs from 'fs'
 
 test.beforeAll(async () => {
@@ -143,7 +143,7 @@ test.describe('/users_ui_and_api', () => {
     test('Update user profile information via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber) 
+        await logInUserViaWeb(page, randomNumber) 
         await page.goto('app/profile')
         await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 12 }))
         await page.locator('input[name="company"]').fill(faker.internet.userName())
@@ -158,7 +158,7 @@ test.describe('/users_ui_and_api', () => {
     test('Update user profile information via UI and API - Invalid company name @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber) 
+        await logInUserViaWeb(page, randomNumber) 
         await page.goto('app/profile')
         await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 12 }))
         await page.locator('input[name="company"]').fill('e')
@@ -173,7 +173,7 @@ test.describe('/users_ui_and_api', () => {
     test('Update user profile information via UI and API - Invalid phone number @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber) 
+        await logInUserViaWeb(page, randomNumber) 
         await page.goto('app/profile')
         await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 2 }))
         await page.locator('input[name="company"]').fill(faker.internet.userName())
@@ -188,7 +188,7 @@ test.describe('/users_ui_and_api', () => {
     test('Change a user\'s password via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)  
+        await logInUserViaWeb(page, randomNumber)  
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_password: body.user_password,
@@ -210,7 +210,7 @@ test.describe('/users_ui_and_api', () => {
     test('Change a user\'s password via UI and API - Type same password @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)  
+        await logInUserViaWeb(page, randomNumber)  
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_password: body.user_password
@@ -231,7 +231,7 @@ test.describe('/users_ui_and_api', () => {
     test('Log out a user via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber) 
+        await logInUserViaWeb(page, randomNumber) 
         await page.click('button:has-text("Logout")')
         const logout = page.locator('[href="/notes/app/login"]')
         await expect(logout).toContainText('Login')        
@@ -244,7 +244,7 @@ test.describe('/users_ui_and_api', () => {
     test('Delete user account via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)  
+        await logInUserViaWeb(page, randomNumber)  
         await page.goto('app/profile')
         await page.click('button:has-text("Delete Account")')     
         await page.getByTestId('note-delete-confirm').click() 

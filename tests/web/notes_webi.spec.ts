@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
-import { deleteJsonFile, logInUserViaUi, deleteUserViaUi, createUserViaUi, deleteNoteViaUi, createNoteViaUi } from '../support/commands'
+import { deleteJsonFile, logInUserViaWeb, deleteUserViaWeb, createUserViaWeb, deleteNoteViaWeb, createNoteViaWeb } from '../support/commands'
 import fs from 'fs'
 
 test.beforeAll(async () => {
@@ -17,8 +17,8 @@ test.describe('/notes_ui', () => {
     test('Create a new note via UI @UI @BASIC @FULL', async ({ page }) => {
         //Playwright fails to recognize randomNumber constant when it is inputed in beforeEach hook
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
@@ -73,17 +73,17 @@ test.describe('/notes_ui', () => {
             user_name: user.user_name,                
             user_password: user.user_password,      
         }), "utf8"); 
-        // deleteNoteViaUi custom command has no use since we are able to delete the user account at once. However, we will keep it here for learning purposes. 
-        await deleteNoteViaUi(page, randomNumber)
-        await deleteUserViaUi(page)
+        // deleteNoteViaWeb custom command has no use since we are able to delete the user account at once. However, we will keep it here for learning purposes. 
+        await deleteNoteViaWeb(page, randomNumber)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Create a new note via UI - Invalid title @UI @FULL @NEGATIVE', async ({ page }) => {
         //Playwright fails to recognize randomNumber constant when it is inputed in beforeEach hook
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const note = {            
             description: faker.word.words(5),
             category: faker.helpers.arrayElement(['Home', 'Work', 'Personal']),
@@ -102,15 +102,15 @@ test.describe('/notes_ui', () => {
         const alertMessage = page.locator(':nth-child(3) > .invalid-feedback')
         await expect(alertMessage).toContainText('Title should be between 4 and 100 characters')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Create a new note via UI - Invalid description @UI @FULL @NEGATIVE', async ({ page }) => {
         //Playwright fails to recognize randomNumber constant when it is inputed in beforeEach hook
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const note = {            
             title: faker.word.words(5),
             category: faker.helpers.arrayElement(['Home', 'Work', 'Personal']),
@@ -129,14 +129,14 @@ test.describe('/notes_ui', () => {
         const alertMessage = page.locator(':nth-child(4) > .invalid-feedback')
         await expect(alertMessage).toContainText('Description should be between 4 and 1000 characters')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Get all notes via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {   
             user_email: body.user_email,
@@ -198,15 +198,15 @@ test.describe('/notes_ui', () => {
             await page.locator(':nth-child('+arrayIndex[k]+') > [data-testid="note-card"] > .card-footer > div > [data-testid="note-delete"]').click()        
             await page.locator('[data-testid="note-delete-confirm"]').click()
         }
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Update an existing note via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
-        await createNoteViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
+        await createNoteViaWeb(page, randomNumber)
         await page.click('button:has-text("Edit")') 
         const note = {            
             title: faker.word.words(3),
@@ -224,15 +224,15 @@ test.describe('/notes_ui', () => {
         const noteDescription = page.locator('[data-testid="note-card-description"]')
         await expect(noteDescription).toContainText(note.description)        
         await expect(noteDescription).toBeVisible()
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Update an existing note via UI - Invalid title @UI @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
-        await createNoteViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
+        await createNoteViaWeb(page, randomNumber)
         await page.click('button:has-text("Edit")') 
         const note = {           
             description: faker.word.words(5),
@@ -246,15 +246,15 @@ test.describe('/notes_ui', () => {
         const alertMessage = page.locator(':nth-child(3) > .invalid-feedback')
         await expect(alertMessage).toContainText('Title should be between 4 and 100 characters')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Update an existing note via UI - Invalid description @UI @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
-        await createNoteViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
+        await createNoteViaWeb(page, randomNumber)
         await page.click('button:has-text("Edit")') 
         const note = {           
             title: faker.word.words(3),
@@ -268,29 +268,29 @@ test.describe('/notes_ui', () => {
         const alertMessage = page.locator(':nth-child(4) > .invalid-feedback')
         await expect(alertMessage).toContainText('Description should be between 4 and 1000 characters')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Update the completed status of a note via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
-        await createNoteViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
+        await createNoteViaWeb(page, randomNumber)
         await page.click('button:has-text("Edit")') 
         await page.getByTestId('note-completed').click()                
         await page.click('button:has-text("Save")') 
         const noteComplete = page.locator('[data-testid="toggle-note-switch"]')
         await expect(noteComplete).not.toBeChecked()  
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Delete a note via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
-        await createNoteViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
+        await createNoteViaWeb(page, randomNumber)
         await page.locator('[data-testid="note-delete"]').click()     
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const note = {
@@ -299,7 +299,7 @@ test.describe('/notes_ui', () => {
         const noteModal = page.locator('[class="modal-content"]')
         await expect(noteModal).toContainText(note.note_title)
         await page.locator('[data-testid="note-delete-confirm"]').click() 
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 

@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
-import { createUserViaApi, deleteUserViaApi, deleteJsonFile, logInUserViaUi, createNoteViaApi } from '../support/commands'
+import { createUserViaApi, deleteUserViaApi, deleteJsonFile, logInUserViaWeb, createNoteViaApi } from '../support/commands'
 import fs from 'fs'
 
 test.beforeAll(async () => {
@@ -17,7 +17,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Create a new note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
@@ -82,7 +82,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Create a new note via UI and API - Invalid title @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const note = {            
             description: faker.word.words(5),
             category: faker.helpers.arrayElement(['Home', 'Work', 'Personal']),
@@ -108,7 +108,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Create a new note via UI and API - Invalid description @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {        
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const note = {            
             title: faker.word.words(3),
             category: faker.helpers.arrayElement(['Home', 'Work', 'Personal']),
@@ -134,7 +134,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Get all notes via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {   
             user_email: body.user_email,
@@ -205,7 +205,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Update an existing note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
@@ -233,7 +233,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Update an existing note via UI and API - Invalid title @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
@@ -257,7 +257,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Update an existing note via UI and API - Invalid description @UI_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
@@ -281,7 +281,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Update the completed status of a note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')
@@ -297,7 +297,7 @@ test.describe('/notes_ui_and_api', () => {
     test('Delete a note via UI and API @UI_AND_API @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
-        await logInUserViaUi(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await createNoteViaApi(request, randomNumber)
         //goto() will show api created note
         await page.goto('app')

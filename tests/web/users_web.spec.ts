@@ -1,6 +1,6 @@
 import { test, expect } from '@playwright/test'
 import { faker } from '@faker-js/faker'
-import { deleteJsonFile, getFullFilledResponseCU, logInUserViaUi, deleteUserViaUi, createUserViaUi, getFullFilledResponseLogIn } from '../support/commands'
+import { deleteJsonFile, getFullFilledResponseCU, logInUserViaWeb, deleteUserViaWeb, createUserViaWeb, getFullFilledResponseLogIn } from '../support/commands'
 import fs from 'fs'
 
 test.beforeAll(async () => {
@@ -44,8 +44,8 @@ test.describe('/users_ui', () => {
             user_password: user.user_password        
         }), "utf8"); 
         // console.log(user_id)   
-        await logInUserViaUi(page, randomNumber)
-        await deleteUserViaUi(page)
+        await logInUserViaWeb(page, randomNumber)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
@@ -87,7 +87,7 @@ test.describe('/users_ui', () => {
 
     test('Log in as an existing user via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
@@ -119,13 +119,13 @@ test.describe('/users_ui', () => {
             user_password: user.user_password,
             user_token: responseBody.data.token
         }), "utf8");
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)    
     })
 
     test('Log in as an existing user via UI - Wrong password @UI @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
@@ -140,14 +140,14 @@ test.describe('/users_ui', () => {
         const alertMessage = page.locator('[data-testid="alert-message"]')
         await expect(alertMessage).toContainText('Incorrect email address or password')        
         await expect(alertMessage).toBeVisible()
-        await logInUserViaUi(page, randomNumber)
-        await deleteUserViaUi(page)
+        await logInUserViaWeb(page, randomNumber)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)    
     })
 
     test('Log in as an existing user via UI - Invalid e-mail @UI @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_email: body.user_email,
@@ -162,25 +162,25 @@ test.describe('/users_ui', () => {
         const alertMessage = page.locator('[data-testid="alert-message"]')
         await expect(alertMessage).toContainText('Incorrect email address or password')        
         await expect(alertMessage).toBeVisible()
-        await logInUserViaUi(page, randomNumber)
-        await deleteUserViaUi(page)
+        await logInUserViaWeb(page, randomNumber)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)   
     })
 
     test('Retrieve user profile information via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         // input assertion
         await page.goto('app/profile')
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Update user profile information via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await page.goto('app/profile')
         await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 12 }))
         await page.locator('input[name="company"]').fill(faker.internet.userName())
@@ -188,14 +188,14 @@ test.describe('/users_ui', () => {
         const profileUpdated = page.locator('[data-testid="alert-message"]')
         await expect(profileUpdated).toContainText('Profile updated successful')        
         await expect(profileUpdated).toBeVisible() 
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Update user profile information via UI - Invalid company name @UI @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await page.goto('app/profile')
         await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 12 }))
         await page.locator('input[name="company"]').fill('e')
@@ -203,14 +203,14 @@ test.describe('/users_ui', () => {
         const alertMessage = page.locator('.mb-4 > .invalid-feedback')
         await expect(alertMessage).toContainText('company name should be between 4 and 30 characters')        
         await expect(alertMessage).toBeVisible() 
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Update user profile information via UI - Invalid phone number @UI @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await page.goto('app/profile')
         await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 2 }))
         await page.locator('input[name="company"]').fill(faker.internet.userName())
@@ -218,14 +218,14 @@ test.describe('/users_ui', () => {
         const alertMessage = page.locator(':nth-child(2) > .mb-2 > .invalid-feedback')
         await expect(alertMessage).toContainText('Phone number should be between 8 and 20 digits')        
         await expect(alertMessage).toBeVisible() 
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Change a user\'s password via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_password: body.user_password,
@@ -240,14 +240,14 @@ test.describe('/users_ui', () => {
         const passwordChanged = page.locator('[data-testid="alert-message"]')
         await expect(passwordChanged).toContainText('The password was successfully updated')        
         await expect(passwordChanged).toBeVisible()
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Change a user\'s password via UI - Type same password @UI @FULL @NEGATIVE', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
         const user = {
             user_password: body.user_password,
@@ -261,27 +261,27 @@ test.describe('/users_ui', () => {
         const alertMessage = page.locator('[data-testid="alert-message"]')
         await expect(alertMessage).toContainText('The new password should be different from the current password')        
         await expect(alertMessage).toBeVisible()
-        await deleteUserViaUi(page)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Log out a user via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await page.click('button:has-text("Logout")')
         const logout = page.locator('[href="/notes/app/login"]')
         await expect(logout).toContainText('Login')        
         await expect(logout).toBeVisible()
-        await logInUserViaUi(page, randomNumber)
-        await deleteUserViaUi(page)
+        await logInUserViaWeb(page, randomNumber)
+        await deleteUserViaWeb(page)
         await deleteJsonFile(randomNumber)
     })
 
     test('Delete user account via UI @UI @BASIC @FULL', async ({ page }) => {
         const randomNumber = faker.finance.creditCardNumber()
-        await createUserViaUi(page, randomNumber)
-        await logInUserViaUi(page, randomNumber)
+        await createUserViaWeb(page, randomNumber)
+        await logInUserViaWeb(page, randomNumber)
         await page.goto('app/profile')
         await page.click('button:has-text("Delete Account")')     
         await page.getByTestId('note-delete-confirm').click() 

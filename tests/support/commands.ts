@@ -130,7 +130,7 @@ export async function getFullFilledResponseLogIn(page: Page) {
     return page.waitForResponse('/notes/api/users/login')
 }
 
-export async function logInUserViaUi(page: Page, randomNumber: string) {
+export async function logInUserViaWeb(page: Page, randomNumber: string) {
     const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const user = {
         user_email: body.user_email,
@@ -168,7 +168,7 @@ export async function deleteJsonFile(randomNumber: string) {
     try {fs.unlinkSync(`tests/fixtures/testdata-${randomNumber}.json`)} catch(err) {throw err}
 }
 
-export async function deleteUserViaUi(page: Page) {
+export async function deleteUserViaWeb(page: Page) {
     await page.goto('app/profile')
     await page.click('button:has-text("Delete Account")')     
     await page.getByTestId('note-delete-confirm').click() 
@@ -177,7 +177,7 @@ export async function deleteUserViaUi(page: Page) {
     await expect(alertMessage).toBeVisible()
 }
 
-export async function createUserViaUi(page: Page, randomNumber: string) {
+export async function createUserViaWeb(page: Page, randomNumber: string) {
     const user = {
         user_name: faker.person.fullName(), 
         //e-mail faker generates faker upper case e-mails. Responses present lower case e-mails. Below function will help.
@@ -208,7 +208,7 @@ export async function createUserViaUi(page: Page, randomNumber: string) {
     // console.log(user_id)  
 }
 
-export async function deleteNoteViaUi(page: Page, randomNumber: string) {
+export async function deleteNoteViaWeb(page: Page, randomNumber: string) {
     await page.locator('[data-testid="note-delete"]').click()     
     const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const note = {
@@ -219,7 +219,7 @@ export async function deleteNoteViaUi(page: Page, randomNumber: string) {
     await page.locator('[data-testid="note-delete-confirm"]').click()  
 }
 
-export async function createNoteViaUi(page: Page, randomNumber: string) {
+export async function createNoteViaWeb(page: Page, randomNumber: string) {
     const body = JSON.parse(fs.readFileSync(`tests/fixtures/testdata-${randomNumber}.json`, "utf8"))
     const user = {
         user_email: body.user_email,

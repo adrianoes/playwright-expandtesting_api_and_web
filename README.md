@@ -1,6 +1,6 @@
 # playwright-expandtesting_web_and_api
 
-UI and API testing in [expandtesting](https://practice.expandtesting.com/notes/app/) note app. This project contains basic examples on how to use playwright to test UI, API and how to combine UI and API tests. Good practices such as hooks, custom commands and tags, among others, are used. All the necessary support documentation to develop this project is placed here. When it comes to the API part, it deals with the x-www-form-urlencoded content type. Although custom commands are used, the assertion code to each test is kept in it so we can work independently in each test. It deals with parallel test execution by creating one .json file for each test so we can share data between different requests in the test. The .json file is excluded after each test execution. 
+WEB and API testing in [expandtesting](https://practice.expandtesting.com/notes/app/) note app. This project contains basic examples on how to use playwright to test WEB, API and how to combine WEB and API tests. Good practices such as hooks, custom commands and tags, among others, are used. All the necessary support documentation to develop this project is placed here. When it comes to the API part, it deals with the x-www-form-urlencoded content type. Although custom commands are used, the assertion code to each test is kept in it so we can work independently in each test. It deals with parallel test execution by creating one .json file for each test so we can share data between different requests in the test. The .json file is excluded after each test execution. 
 
 # Pre-requirements:
 
@@ -59,4 +59,4 @@ Check then both to add both options in context menu.
 
 # Tips:
 
-- UI and API tests to send password reset link to user's email and API tests to verify a password reset token and reset a user's password must be tested manually as they rely on e-mail verification.
+- WEB and API tests to send password reset link to user's email and API tests to verify a password reset token and reset a user's password must be tested manually as they rely on e-mail verification.
