@@ -56,6 +56,7 @@ Check then both to add both options in context menu.
 - [reload](https://playwright.dev/docs/api/class-page#page-reload)
 - [How to Check an Element's Value in Playwright](https://betterstack.com/community/questions/playwright-check-element-value/)
 - [Tag tests](https://playwright.dev/docs/test-annotations#tag-tests)
+- [[Feature]: Support Ubuntu 24.04 #30368](https://github.com/microsoft/playwright/issues/30368)
 
 # Tips:
 
