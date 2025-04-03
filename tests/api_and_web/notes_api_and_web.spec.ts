@@ -12,9 +12,9 @@ test.beforeEach(async ({ page }) => {
     await page.goto('app')
 });
 
-test.describe('/notes_web_and_api', () => { 
+test.describe('/notes_api_and_web', () => { 
 
-    test('Create a new note via WEB and API @WEB_AND_API @BASIC @FULL', async ({ page, request }) => {
+    test('Create a new note via WEB and API @API_AND_WEB @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
@@ -79,7 +79,7 @@ test.describe('/notes_web_and_api', () => {
         await deleteJsonFile(randomNumber) 
     })
 
-    test('Create a new note via WEB and API - Invalid title @WEB_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
+    test('Create a new note via WEB and API - Invalid title @API_AND_WEB @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
@@ -105,7 +105,7 @@ test.describe('/notes_web_and_api', () => {
         await deleteJsonFile(randomNumber) 
     })
 
-    test('Create a new note via WEB and API - Invalid description @WEB_AND_API @FULL @NEGATIVE', async ({ page, request }) => {        
+    test('Create a new note via WEB and API - Invalid description @API_AND_WEB @FULL @NEGATIVE', async ({ page, request }) => {        
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
@@ -131,7 +131,7 @@ test.describe('/notes_web_and_api', () => {
         await deleteJsonFile(randomNumber) 
     })
 
-    test('Get all notes via WEB and API @WEB_AND_API @BASIC @FULL', async ({ page, request }) => {
+    test('Get all notes via WEB and API @API_AND_WEB @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
@@ -202,7 +202,7 @@ test.describe('/notes_web_and_api', () => {
         await deleteJsonFile(randomNumber) 
     })
 
-    test('Update an existing note via WEB and API @WEB_AND_API @BASIC @FULL', async ({ page, request }) => {
+    test('Update an existing note via WEB and API @API_AND_WEB @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
@@ -230,7 +230,7 @@ test.describe('/notes_web_and_api', () => {
         await deleteJsonFile(randomNumber)     
     })
     
-    test('Update an existing note via WEB and API - Invalid title @WEB_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
+    test('Update an existing note via WEB and API - Invalid title @API_AND_WEB @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
@@ -254,7 +254,7 @@ test.describe('/notes_web_and_api', () => {
         await deleteJsonFile(randomNumber)     
     })
     
-    test('Update an existing note via WEB and API - Invalid description @WEB_AND_API @FULL @NEGATIVE', async ({ page, request }) => {
+    test('Update an existing note via WEB and API - Invalid description @API_AND_WEB @FULL @NEGATIVE', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
@@ -278,7 +278,7 @@ test.describe('/notes_web_and_api', () => {
         await deleteJsonFile(randomNumber)     
     })
 
-    test('Update the completed status of a note via WEB and API @WEB_AND_API @BASIC @FULL', async ({ page, request }) => {
+    test('Update the completed status of a note via WEB and API @API_AND_WEB @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
@@ -294,7 +294,7 @@ test.describe('/notes_web_and_api', () => {
         await deleteJsonFile(randomNumber)     
     })
 
-    test('Delete a note via WEB and API @WEB_AND_API @BASIC @FULL', async ({ page, request }) => {
+    test('Delete a note via WEB and API @API_AND_WEB @BASIC @FULL', async ({ page, request }) => {
         const randomNumber = faker.finance.creditCardNumber()          
         await createUserViaApi(request, randomNumber) 
         await logInUserViaWeb(page, randomNumber)
