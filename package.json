@@ -1,16 +1,4 @@
 {
-<<<<<<< HEAD
-  "name": "playwright-expandtesting_web_and_api",
-  "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
-  "devDependencies": {
-    "@faker-js/faker": "^8.4.1",
-    "@playwright/test": "^1.44.1",
-    "@types/node": "^20.14.7"
-  },
-  "scripts": {}
-=======
   "name": "playwright-expandtesting_api_and_web",
   "version": "1.0.0",
   "main": "index.js",
@@ -24,5 +12,4 @@
     "@playwright/test": "^1.55.0",
     "@types/node": "^24.3.0"
   }
->>>>>>> 901bf3c (updating user name faker function)
 }
