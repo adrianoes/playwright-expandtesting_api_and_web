@@ -17,7 +17,7 @@ API and WEB testing in [expandtesting](https://practice.expandtesting.com/notes/
 
 - See [Node.js page](https://nodejs.org/en) and install the aforementioned Node.js version. Keep all the preferenced options as they are.
 - To use yarn packet manager, open windows prompt as admin and execute ```corepack enable``` (Optional).
-- Execute ```npm init playwright@latestt``` to start a project.
+- Execute ```npm init playwright@latest``` to start a project.
   - Hit :point_right:**Enter** to select TypeScript.
   - Hit :point_right:**Enter** to put your end-to-end tests in \tests.
   - Hit :point_right:**y** to add a GitHub Actions workflow.
