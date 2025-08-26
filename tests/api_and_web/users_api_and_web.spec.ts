@@ -146,11 +146,7 @@ test.describe('/users_api_and_web', () => {
         await logInUserViaWeb(page, randomNumber) 
         await page.goto('app/profile')
         await page.locator('input[name="phone"]').fill(faker.string.numeric({ length: 12 }))
-<<<<<<< HEAD
-        await page.locator('input[name="company"]').fill(faker.internet.userName())
-=======
         await page.locator('input[name="company"]').fill(faker.internet.username())
->>>>>>> 901bf3c (updating user name faker function)
         await page.click('button:has-text("Update profile")') 
         const profileUpdated = page.locator('[data-testid="alert-message"]')
         await expect(profileUpdated).toContainText('Profile updated successful')        
