@@ -228,11 +228,7 @@ test.describe('/users_api', () => {
             user_token: body.user_token
         }      
         const updated_user = {  
-<<<<<<< HEAD
-            updated_user_company: faker.internet.userName(), 
-=======
             updated_user_company: faker.internet.username(), 
->>>>>>> 901bf3c (updating user name faker function)
             updated_user_phone: faker.string.numeric({ length: 12 }),         
             updated_user_name: faker.person.fullName()                
         }
@@ -267,11 +263,7 @@ test.describe('/users_api', () => {
             user_token: body.user_token
         }      
         const updated_user = {  
-<<<<<<< HEAD
-            updated_user_company: faker.internet.userName(), 
-=======
             updated_user_company: faker.internet.username(), 
->>>>>>> 901bf3c (updating user name faker function)
             updated_user_phone: faker.string.numeric({ length: 12 }),         
             updated_user_name: faker.person.fullName()                
         }
@@ -301,11 +293,7 @@ test.describe('/users_api', () => {
             user_token: body.user_token
         }      
         const updated_user = {  
-<<<<<<< HEAD
-            updated_user_company: faker.internet.userName(), 
-=======
             updated_user_company: faker.internet.username(), 
->>>>>>> 901bf3c (updating user name faker function)
             updated_user_phone: faker.string.numeric({ length: 12 }),         
             updated_user_name: faker.person.fullName()                
         }
